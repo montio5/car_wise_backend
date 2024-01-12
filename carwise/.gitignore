@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+*.pyd
+*~
+.cache
+.pytest_cache
+env/
+venv/
+*.sqlite3
+.DS_Store
+*.env
