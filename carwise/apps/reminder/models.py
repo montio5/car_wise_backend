@@ -31,7 +31,8 @@ CABIN_AIR_FILTER_CHANGE_YEARS = 1
 class Car(models.Model):
     unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=256)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_cars")
+
     # oils
     engine_oil = models.IntegerField(null=True)
     gearbox_oil = models.IntegerField(null=True)
@@ -59,6 +60,17 @@ class Car(models.Model):
 # --------------------------------------
 
 
+class CarMileage(models.Model):
+    car = models.OneToOneField(
+        "Car", on_delete=models.CASCADE, related_name="car_mileages"
+    )
+    mileage = models.IntegerField()
+    created_date = models.DateTimeField(auto_now_add=True)
+
+
+# --------------------------------------
+
+
 class CarCustomizeSetup(models.Model):
     car = models.OneToOneField("Car", on_delete=models.CASCADE)
     # oils
@@ -80,6 +92,17 @@ class CarCustomizeSetup(models.Model):
     front_suspension = models.IntegerField(default=FRONT_SUSPENSION)
     cooler_gas_change_years = models.IntegerField(default=COOLER_GAS_CHANGE_YEARS)
     clutch_plate = models.IntegerField(default=CLUTCH_PLATE)
+
+
+# --------------------------------------
+
+
+class CustomFiled(models.Model):
+    car = models.ForeignKey(
+        "Car", on_delete=models.CASCADE, related_name="car_custom_fileds"
+    )
+    name = models.CharField(max_length=256)
+    mileage_per_change = models.IntegerField()
 
 
 # --------------------------------------
