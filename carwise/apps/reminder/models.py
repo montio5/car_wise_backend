@@ -104,6 +104,7 @@ class CarCustomSetup(models.Model):
 
 
 class CustomFiled(models.Model):
+
     car = models.ForeignKey(
         "Car", on_delete=models.CASCADE, related_name="car_custom_fileds"
     )

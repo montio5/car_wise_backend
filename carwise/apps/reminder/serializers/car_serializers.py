@@ -7,7 +7,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from apps.common.message import AppMessages
 
-from apps.reminder.models import Car, CarCompany, Mileage, CarModel
+from apps.reminder.models import Car, CarCompany, CustomFiled, Mileage, CarModel
+from apps.reminder.serializers.custom_serializers import CustomFieldSerializer
 
 # First Party Imports
 
@@ -23,6 +24,17 @@ class UserCarListSerializer(serializers.ModelSerializer):
             "unique_key",
             "name",
         ]
+
+
+# __________________  Custom Field List Serializer ___________________ #
+
+
+class CustomFieldListSerializer(serializers.ModelSerializer):
+    """serializer for getting, updating custom_field detail"""
+
+    class Meta:
+        model = CustomFiled
+        fields = "__all__"
 
 
 # __________________  Car Serializer ___________________ #
@@ -68,10 +80,15 @@ class MileageSerializer(serializers.ModelSerializer):
     )
     created_date = serializers.DateTimeField(read_only=True)
     unique_key = serializers.CharField(read_only=True)
+    custom_fields = CustomFieldSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = Mileage
-        fields = ["__all__"]
+        fields = ["car", "created_date", "unique_key", "custom_fields"]
+        read_only_fields = ["unique_key", "created_date"]
 
     def validate(self, object):
         if object.car in Car.objects.filter(user=self.context.get("request").user):

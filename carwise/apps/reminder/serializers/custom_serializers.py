@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from apps.common.message import AppMessages
 
-from apps.reminder.models import Car, CustomFiled
+from apps.reminder.models import Car, CarCustomSetup, CustomFiled
 
 # __________________  custom_field Serializer ___________________ #
 
@@ -11,14 +11,13 @@ from apps.reminder.models import Car, CustomFiled
 class CustomFieldSerializer(serializers.ModelSerializer):
     """serializer for getting, updating custom_field detail"""
 
-    car = serializers.PrimaryKeyRelatedField(
-        queryset=Car.objects.all(),
-        required=True,
-    )
+    # car = serializers.PrimaryKeyRelatedField(
+    #     queryset=Car.objects.all(),
+    # )
 
     class Meta:
         model = CustomFiled
-        fields = ["__all__"]
+        fields = "__all__"
 
     def validate(self, object):
         mileage_per_change = object.get("mileage_per_change", None)
@@ -41,3 +40,20 @@ class CustomFieldSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+
+
+# __________________   Car Custom Setup Serializer ___________________ #
+
+
+class CustomSetupSerializer(serializers.ModelSerializer):
+    """serializer for getting, updating custom_field detail"""
+
+    car = serializers.PrimaryKeyRelatedField(
+        queryset=Car.objects.all(),
+        required=True,
+    )
+    custom_fields = CustomFieldSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CarCustomSetup
+        fields = ["__all__", "custom_fields"]
