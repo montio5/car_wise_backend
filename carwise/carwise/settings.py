@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     #
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_yasg",
     #
     "apps.reminder",
+    "apps.user",
 ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -59,6 +61,16 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+}
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer {token}",
+        },
+    },
 }
 
 MIDDLEWARE = [

@@ -32,6 +32,22 @@ class Car(models.Model):
     unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=256)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_cars")
+    car_model = models.ForeignKey(
+        "CarModel", on_delete=models.CASCADE, related_name="model_cars"
+    )
+    created_date = models.DateTimeField(auto_now_add=True)
+
+
+# --------------------------------------
+
+
+class Mileage(models.Model):
+    car = models.OneToOneField(
+        "Car", on_delete=models.CASCADE, related_name="car_mileages"
+    )
+    mileage = models.IntegerField()
+    created_date = models.DateTimeField(auto_now_add=True)
+    unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
     # oils
     engine_oil = models.IntegerField(null=True)
@@ -46,8 +62,8 @@ class Car(models.Model):
     cabin_air_filter = models.IntegerField(null=True)
     cabin_air_filter_updated_date = models.DateTimeField(null=True)
     # belts
-    timing_belt = models.IntegerField()
-    alternator_belt = models.IntegerField()
+    timing_belt = models.IntegerField(null=True)
+    alternator_belt = models.IntegerField(null=True)
     #
     front_brake_pads = models.IntegerField(null=True)
     rear_brake_pads = models.IntegerField(null=True)
@@ -60,23 +76,13 @@ class Car(models.Model):
 # --------------------------------------
 
 
-class CarMileage(models.Model):
-    car = models.OneToOneField(
-        "Car", on_delete=models.CASCADE, related_name="car_mileages"
-    )
-    mileage = models.IntegerField()
-    created_date = models.DateTimeField(auto_now_add=True)
-
-
-# --------------------------------------
-
-
-class CarCustomizeSetup(models.Model):
+class CarCustomSetup(models.Model):
     car = models.OneToOneField("Car", on_delete=models.CASCADE)
     # oils
     engine_oil = models.IntegerField(default=ENGINE_OIL)
     brake_fluid = models.IntegerField(default=BRAKE_FLUID)
     hydraulic_fluid = models.IntegerField(default=HYDRAULIC_FLUID)
+    gearbox_oil = models.IntegerField(default=GEARBOX_OIL)
     # filters
     oil_filter = models.IntegerField(default=OIL_FILTER)
     fuel_filter = models.IntegerField(default=FUEL_FILTER)
@@ -102,14 +108,16 @@ class CustomFiled(models.Model):
         "Car", on_delete=models.CASCADE, related_name="car_custom_fileds"
     )
     name = models.CharField(max_length=256)
-    mileage_per_change = models.IntegerField()
+    mileage_per_change = models.IntegerField(null=True)
+    month_per_changes = models.IntegerField(null=True)
+    year_per_changes = models.IntegerField(null=True)
 
 
 # --------------------------------------
 
 
 class CarCompany(models.Model):
-    car_company = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
 
 
 # --------------------------------------
@@ -117,5 +125,5 @@ class CarCompany(models.Model):
 
 class CarModel(models.Model):
     unique_key = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    car_model = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
     car_company = models.ForeignKey(CarCompany, on_delete=models.CASCADE)
