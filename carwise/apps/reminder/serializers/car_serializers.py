@@ -18,11 +18,17 @@ from apps.reminder.serializers.custom_serializers import CustomFieldSerializer
 class UserCarListSerializer(serializers.ModelSerializer):
     """serializer for getting list of cars"""
 
+    unique_key = serializers.CharField(read_only=True)
+    car_model = serializers.CharField(source="car_model.name")
+    car_company = serializers.CharField(source="car_model.car_company.name")
+
     class Meta:
         model = Car
         fields = [
             "unique_key",
             "name",
+            "car_company",
+            "car_model",
         ]
 
 

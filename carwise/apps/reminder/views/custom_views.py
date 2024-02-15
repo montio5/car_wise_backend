@@ -5,27 +5,20 @@ from apps.reminder.models import Car, CarCustomSetup, CustomFiled, Mileage
 # Django
 from apps.reminder.serializers.car_serializers import (
     CarSerializer,
-    MileageSerializer,
-    UserCarListSerializer,
 )
-from django.db.models import Max
 
 # Third Party Packages
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
     RetrieveUpdateDestroyAPIView,
-    RetrieveUpdateAPIView,
     get_object_or_404,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from drf_yasg.utils import swagger_auto_schema
 
 # First Party Imports
-from drf_yasg import openapi
-
 from apps.reminder.serializers.custom_serializers import CustomFieldSerializer
 from rest_framework.decorators import api_view
 
@@ -42,8 +35,11 @@ class CustomFieldListAPI(ListAPIView):
     serializer_class = CustomFieldSerializer
 
     def get_queryset(self):
+        car_unique_key = self.kwargs["car_unique_key"]
         user = self.request.user
-        return user.user_cars.all()
+        return CustomFiled.objects.filter(
+            car__unique_key=car_unique_key, car__user=user
+        )
 
 
 # ___________________________ Admin Add car API __________________________ #
@@ -55,7 +51,7 @@ class CustomFieldAddAPI(CreateAPIView):
     """
 
     permission_classes = [IsAuthenticated]
-    serializer_class = CarSerializer
+    serializer_class = CustomFieldSerializer
 
 
 # ___________________________ Admin Update Destroy car API __________________________ #
@@ -68,7 +64,7 @@ class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
 
     permission_classes = [IsAuthenticated]
     http_method_names = ["put", "delete", "get"]
-    serializer_class = CarSerializer
+    serializer_class = CustomFieldSerializer
 
     def put(self, request, *args, **kwargs):
         car_object = self.get_object()
