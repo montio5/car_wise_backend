@@ -3,8 +3,7 @@ from django.urls import include, path
 from apps.reminder.views.car_views import (
     CarAddAPI,
     CarUpdateDestroyAPI,
-    MileageAddAPI,
-    MileageUpdateAPI,
+    MileageView,
     UserCarListAPI,
 )
 from apps.reminder.views.custom_views import (
@@ -28,11 +27,11 @@ car = [
 # _________________________ mileage ________________________ #
 
 mileage = [
-    path("new/", MileageAddAPI.as_view(), name="add_mileage"),
+    path("<str:car_unique_key>/new/", MileageView.as_view(), name="add_mileage"),
     path(
         "<str:unique_key>/",
-        MileageUpdateAPI.as_view(),
-        name="mileage_edit_delete",
+        MileageView.as_view(),
+        name="edit_mileage",
     ),
 ]
 # _________________________ custom field ________________________ #

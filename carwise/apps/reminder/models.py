@@ -44,7 +44,7 @@ class Car(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.unique_key + "-" + self.car.name + "user :" + self.user.email
+        return self.unique_key + "-" + self.name + "user :" + self.user
 
 
 # --------------------------------------
@@ -75,6 +75,7 @@ class Mileage(models.Model):
     cabin_air_filter_updated_date = models.DateTimeField(null=True)
     # belts
     timing_belt = models.IntegerField(null=True)
+    timing_belt_filter_updated_date = models.DateTimeField(null=True)
     alternator_belt = models.IntegerField(null=True)
     #
     front_brake_pads = models.IntegerField(null=True)
@@ -137,10 +138,12 @@ class CustomFiled(models.Model):
     name = models.CharField(max_length=256)
     mileage_per_change = models.IntegerField(null=True)
     month_per_changes = models.IntegerField(null=True)
-    year_per_changes = models.IntegerField(null=True)
+    #
+    last_mileage_changed = models.IntegerField(null=True)
+    last_date_changed = models.DateField(null=True)
 
     def __str__(self):
-        return self.name
+        return str(self.id) + "-" + self.name
 
 
 # --------------------------------------

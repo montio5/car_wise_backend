@@ -11,29 +11,41 @@ from apps.reminder.models import Car, CarCustomSetup, CustomFiled
 class CustomFieldSerializer(serializers.ModelSerializer):
     """serializer for getting, updating custom_field detail"""
 
-    # car = serializers.PrimaryKeyRelatedField(
-    #     queryset=Car.objects.all(),
-    # )
-
     class Meta:
         model = CustomFiled
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "mileage_per_change",
+            "month_per_changes",
+            "last_mileage_changed",
+            "last_date_changed",
+        ]
 
-    def validate(self, object):
-        mileage_per_change = object.get("mileage_per_change", None)
-        year_per_changes = object.get("year_per_changes", None)
-        month_per_changes = object.get("month_per_changes", None)
-        if (
-            mileage_per_change is None
-            and year_per_changes is None
-            and month_per_changes is None
-        ):
-            raise ValidationError(AppMessages.INVALID_CUSTOM_FIELD.value)
-        return object
+    def validate(self, validated_data):
+        mileage_per_change = validated_data.get("mileage_per_change", None)
+        month_per_changes = validated_data.get("month_per_changes", None)
+        if mileage_per_change is None and month_per_changes is None:
+            raise ValidationError(
+                AppMessages.INVALID_CUSTOM_FIELD.value.format(
+                    "mileage_per_change, month_per_changes"
+                )
+            )
 
-    def create(self, validated_data):
-        custom_field = CustomFiled.objects.create(**validated_data)
-        return custom_field
+        #
+        last_mileage_changed = validated_data.get("last_mileage_changed", None)
+        last_date_changed = validated_data.get("last_date_changed", None)
+        if mileage_per_change is not None:
+            if last_mileage_changed is None:
+                raise ValidationError(
+                    AppMessages.MUST_FIELD.value.format("last_mileage_changed")
+                )
+        if month_per_changes is not None:
+            if last_date_changed is None:
+                raise ValidationError(
+                    AppMessages.MUST_FIELD.value.format("last_date_changed")
+                )
+        return validated_data
 
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():

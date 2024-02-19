@@ -19,7 +19,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 # First Party Imports
-from apps.reminder.serializers.custom_serializers import CustomFieldSerializer
+from apps.reminder.serializers.custom_serializers import (
+    CustomFieldSerializer,
+    CustomSetupSerializer,
+)
 from rest_framework.decorators import api_view
 
 # Get an instance of a logger
@@ -42,7 +45,7 @@ class CustomFieldListAPI(ListAPIView):
         )
 
 
-# ___________________________ Admin Add car API __________________________ #
+# ___________________________ Custom Field Add API __________________________ #
 
 
 class CustomFieldAddAPI(CreateAPIView):
@@ -53,8 +56,21 @@ class CustomFieldAddAPI(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CustomFieldSerializer
 
+    def post(self, request, *args, **kwargs):
+        car = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(car=car)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-# ___________________________ Admin Update Destroy car API __________________________ #
+    def get_object(self):
+        return get_object_or_404(
+            Car,
+            unique_key=self.kwargs["car_unique_key"],
+        )
+
+
+# ___________________________ Custom Field Update Destroy API __________________________ #
 
 
 class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
@@ -76,7 +92,7 @@ class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     def get_object(self):
         return get_object_or_404(
             CustomFiled,
-            unique_key=self.kwargs["id"],
+            id=self.kwargs["id"],
         )
 
 
@@ -89,8 +105,8 @@ class CarCustomSetupUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     """
 
     permission_classes = [IsAuthenticated]
-    http_method_names = ["put", "get"]
-    serializer_class = CarSerializer
+    http_method_names = ["put", "get", "delete"]
+    serializer_class = CustomSetupSerializer
 
     def put(self, request, *args, **kwargs):
         car_object = self.get_object()

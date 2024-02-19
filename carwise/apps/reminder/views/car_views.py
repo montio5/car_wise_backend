@@ -18,13 +18,13 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
     get_object_or_404,
 )
+from rest_framework.views import APIView
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from drf_yasg.utils import swagger_auto_schema
 
 # First Party Imports
-from drf_yasg import openapi
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -38,27 +38,6 @@ class UserCarListAPI(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserCarListSerializer
 
-    @swagger_auto_schema(
-        operation_summary="Retrieve Album List",
-        operation_description="Get Album list.",
-        manual_parameters=[
-            openapi.Parameter(
-                "Accept-Language",
-                openapi.IN_HEADER,
-                description="Choose language from the sandbox",
-                type=openapi.TYPE_STRING,
-                enum=["EN", "DE"],
-                default="DE",
-            ),
-        ],
-        responses={
-            status.HTTP_200_OK: UserCarListSerializer,
-            status.HTTP_401_UNAUTHORIZED: "Unauthorized, if credentials were not provided.",
-            status.HTTP_405_METHOD_NOT_ALLOWED: "Method Not Allowed, if wrong HTTP method was used; e.g. PUT instead of GET.",
-            status.HTTP_500_INTERNAL_SERVER_ERROR: "An unexpected error occurred.",
-        },
-        tags=["public_gallery"],
-    )
     def get_queryset(self):
         user = self.request.user
         return user.user_cars.all()
@@ -102,41 +81,61 @@ class CarUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
         )
 
 
+class MileageView(APIView):
+    def post(self, request, *args, **kwargs):
+        car = get_object_or_404(Car, unique_key=self.kwargs["car_unique_key"])
+        serializer = MileageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(car=car)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def put(self, request, *args, **kwargs):
+    mileage = get_object_or_404(Mileage, unique_key=self.kwargs["unique_key"])
+
+    serializer = MileageSerializer(mileage, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ___________________________ Admin Add Mileage API __________________________ #
 
 
-class MileageAddAPI(CreateAPIView):
-    """
-    Add a Mileage .
-    """
+# class MileageAddAPI(CreateAPIView):
+#     """
+#     Add a Mileage .
+#     """
 
-    permission_classes = [IsAuthenticated]
-    serializer_class = MileageSerializer
-
-
-# ___________________________ Admin Update Destroy Mileage API __________________________ #
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = MileageSerializer
 
 
-class MileageUpdateAPI(RetrieveUpdateAPIView):
-    """
-    Update, Delete or Retrieve a Mileage object .
-    """
+# # ___________________________ Admin Update Destroy Mileage API __________________________ #
 
-    permission_classes = [IsAuthenticated]
-    http_method_names = ["put", "get"]
-    serializer_class = MileageSerializer
 
-    def put(self, request, *args, **kwargs):
-        mileage_object = self.get_object()
-        serializer = self.get_serializer(instance=mileage_object, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+# class MileageUpdateAPI(RetrieveUpdateAPIView):
+#     """
+#     Update, Delete or Retrieve a Mileage object .
+#     """
 
-    def get_object(self):
-        return get_object_or_404(
-            Mileage,
-            car__unique_key=self.kwargs["unique_key"],
-            created_date=Max("created_date"),
-            car__user=self.request.user,
-        )
+#     permission_classes = [IsAuthenticated]
+#     http_method_names = ["put", "get"]
+#     serializer_class = MileageSerializer
+
+#     def put(self, request, *args, **kwargs):
+#         mileage_object = self.get_object()
+#         serializer = self.get_serializer(instance=mileage_object, data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+#     def get_object(self):
+#         return get_object_or_404(
+#             Mileage,
+#             car__unique_key=self.kwargs["unique_key"],
+#             created_date=Max("created_date"),
+#             car__user=self.request.user,
+#         )
