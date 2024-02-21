@@ -1,11 +1,12 @@
 # Standard Library
 import logging
-from apps.reminder.models import Car, CarCustomSetup, CustomFiled, Mileage
 
-# Django
-from apps.reminder.serializers.car_serializers import (
-    CarSerializer,
+# First Party Imports
+from apps.reminder.serializers.custom_serializers import (
+    CustomFieldSerializer,
+    CustomSetupSerializer,
 )
+from apps.reminder.models import Car, CarCustomSetup, CustomFiled
 
 # Third Party Packages
 from rest_framework.generics import (
@@ -17,13 +18,8 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema
 
-# First Party Imports
-from apps.reminder.serializers.custom_serializers import (
-    CustomFieldSerializer,
-    CustomSetupSerializer,
-)
-from rest_framework.decorators import api_view
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -31,6 +27,7 @@ logger = logging.getLogger(__name__)
 # ______________________ Custom Field List API ______________________ #
 
 
+@extend_schema(tags=["custom-field"])
 class CustomFieldListAPI(ListAPIView):
     """Get use car list"""
 
@@ -48,6 +45,7 @@ class CustomFieldListAPI(ListAPIView):
 # ___________________________ Custom Field Add API __________________________ #
 
 
+@extend_schema(tags=["custom-field"])
 class CustomFieldAddAPI(CreateAPIView):
     """
     Add an car .
@@ -58,21 +56,23 @@ class CustomFieldAddAPI(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         car = self.get_object()
-        serializer = self.get_serializer(data=request.data)
+        serializer_context = {"car_object": car}
+        serializer = self.get_serializer(data=request.data, context=serializer_context)
         serializer.is_valid(raise_exception=True)
         serializer.save(car=car)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def get_object(self):
+        user = self.request.user
         return get_object_or_404(
-            Car,
-            unique_key=self.kwargs["car_unique_key"],
+            Car, unique_key=self.kwargs["car_unique_key"], user=user
         )
 
 
 # ___________________________ Custom Field Update Destroy API __________________________ #
 
 
+@extend_schema(tags=["custom-field"])
 class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     """
     Update, Delete or Retrieve a car object .
@@ -83,22 +83,25 @@ class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     serializer_class = CustomFieldSerializer
 
     def put(self, request, *args, **kwargs):
-        car_object = self.get_object()
-        serializer = self.get_serializer(instance=car_object, data=request.data)
+        custom_field_object = self.get_object()
+        serializer_context = {"car_object": custom_field_object.car}
+        serializer = self.get_serializer(
+            instance=custom_field_object, data=request.data, context=serializer_context
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_object(self):
         return get_object_or_404(
-            CustomFiled,
-            id=self.kwargs["id"],
+            CustomFiled, id=self.kwargs["id"], car__user=self.request.user
         )
 
 
 # ___________________________ Car Custom Setup Update Destroy API __________________________ #
 
 
+@extend_schema(tags=["custom-setup"])
 class CarCustomSetupUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     """
     Update, Delete or Retrieve a car object .
@@ -119,4 +122,5 @@ class CarCustomSetupUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
         return get_object_or_404(
             CarCustomSetup,
             car__unique_key=self.kwargs["car_unique_key"],
+            car__user=self.request,
         )

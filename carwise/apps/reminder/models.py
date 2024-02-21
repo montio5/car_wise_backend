@@ -1,5 +1,4 @@
 from django.db import models
-import uuid
 from django.contrib.auth.models import User
 import functools
 import secrets
@@ -16,6 +15,7 @@ AIR_FILTER = YEARLY_MIALAGE
 CABIN_AIR_FILTER = YEARLY_MIALAGE
 #
 TIMING_BELT = 60000
+TIMING_BELT_MAX_YEAR = 60000
 ALTERNATOR_BELT = 30000
 FRONT_BRAKE_PAD = 25000
 REAR_BRAKE_PAD = 70000
@@ -44,14 +44,14 @@ class Car(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.unique_key + "-" + self.name + "user :" + self.user
+        return self.unique_key + "-" + self.name + "user :" + str(self.user.id)
 
 
 # --------------------------------------
 
 
 class Mileage(models.Model):
-    car = models.OneToOneField(
+    car = models.ForeignKey(
         "Car", on_delete=models.CASCADE, related_name="car_mileages"
     )
     mileage = models.IntegerField()
@@ -114,6 +114,7 @@ class CarCustomSetup(models.Model):
     cabin_air_filter = models.IntegerField(default=CABIN_AIR_FILTER)
     # belts
     timing_belt = models.IntegerField(default=TIMING_BELT)
+    timing_belt_filter_updated_date = models.IntegerField(default=TIMING_BELT_MAX_YEAR)
     alternator_belt = models.IntegerField(default=ALTERNATOR_BELT)
     #
     front_brake_pads = models.IntegerField(default=FRONT_BRAKE_PAD)
@@ -124,7 +125,7 @@ class CarCustomSetup(models.Model):
     clutch_plate = models.IntegerField(default=CLUTCH_PLATE)
 
     def __str__(self):
-        return self.id + "-" + self.car.name + " id:" + self.car.id
+        return str(self.id) + "-" + self.car.name + " car-id:" + str(self.car.id)
 
 
 # --------------------------------------

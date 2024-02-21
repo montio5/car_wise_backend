@@ -1,37 +1,40 @@
 # Standard Library
 import logging
-from apps.reminder.models import Car, Mileage
 
-# Django
+# First Party Imports
+from apps.reminder.models import Car, Mileage
 from apps.reminder.serializers.car_serializers import (
     CarSerializer,
     MileageSerializer,
     UserCarListSerializer,
 )
-from django.db.models import Max
+
+# Django
 
 # Third Party Packages
 from rest_framework.generics import (
     CreateAPIView,
+    UpdateAPIView,
     ListAPIView,
     RetrieveUpdateDestroyAPIView,
-    RetrieveUpdateAPIView,
     get_object_or_404,
 )
+from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-# First Party Imports
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-# ______________________ Admin car List API ______________________ #
+# ______________________ car List API ______________________ #
 
 
+@extend_schema(tags=["car"])
 class UserCarListAPI(ListAPIView):
     """Get use car list"""
 
@@ -46,6 +49,7 @@ class UserCarListAPI(ListAPIView):
 # ___________________________ Admin Add car API __________________________ #
 
 
+@extend_schema(tags=["car"])
 class CarAddAPI(CreateAPIView):
     """
     Add an car .
@@ -55,9 +59,10 @@ class CarAddAPI(CreateAPIView):
     serializer_class = CarSerializer
 
 
-# ___________________________ Admin Update Destroy car API __________________________ #
+# ___________________________ Update Destroy Car API __________________________ #
 
 
+@extend_schema(tags=["car"])
 class CarUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     """
     Update, Delete or Retrieve a car object .
@@ -76,66 +81,38 @@ class CarUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         return get_object_or_404(
-            Car,
-            unique_key=self.kwargs["unique_key"],
+            Car, unique_key=self.kwargs["unique_key"], user=self.request.user
         )
 
 
-class MileageView(APIView):
-    def post(self, request, *args, **kwargs):
-        car = get_object_or_404(Car, unique_key=self.kwargs["car_unique_key"])
-        serializer = MileageSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(car=car)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# ___________________________  Add/Update Mileage API __________________________ #
 
 
-def put(self, request, *args, **kwargs):
-    mileage = get_object_or_404(Mileage, unique_key=self.kwargs["unique_key"])
+@extend_schema(tags=["mileage"])
+class MileageView(CreateAPIView, UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = MileageSerializer
+    http_method_names = ["put", "post", "get"]
 
-    serializer = MileageSerializer(mileage, data=request.data)
-    if serializer.is_valid():
+    def get_car(self):
+        return get_object_or_404(
+            Car, unique_key=self.kwargs["unique_key"], user=self.request.user
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(car=self.get_car())
+
+    def perform_update(self, serializer):
         serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
 
-# ___________________________ Admin Add Mileage API __________________________ #
-
-
-# class MileageAddAPI(CreateAPIView):
-#     """
-#     Add a Mileage .
-#     """
-
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = MileageSerializer
-
-
-# # ___________________________ Admin Update Destroy Mileage API __________________________ #
-
-
-# class MileageUpdateAPI(RetrieveUpdateAPIView):
-#     """
-#     Update, Delete or Retrieve a Mileage object .
-#     """
-
-#     permission_classes = [IsAuthenticated]
-#     http_method_names = ["put", "get"]
-#     serializer_class = MileageSerializer
-
-#     def put(self, request, *args, **kwargs):
-#         mileage_object = self.get_object()
-#         serializer = self.get_serializer(instance=mileage_object, data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     def get_object(self):
-#         return get_object_or_404(
-#             Mileage,
-#             car__unique_key=self.kwargs["unique_key"],
-#             created_date=Max("created_date"),
-#             car__user=self.request.user,
-#         )
+    def update(self, request, *args, **kwargs):
+        try:
+            return super().update(request, *args, **kwargs)
+        except ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)

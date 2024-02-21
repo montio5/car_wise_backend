@@ -27,7 +27,6 @@ car = [
 # _________________________ mileage ________________________ #
 
 mileage = [
-    path("<str:car_unique_key>/new/", MileageView.as_view(), name="add_mileage"),
     path(
         "<str:unique_key>/",
         MileageView.as_view(),

@@ -11,3 +11,6 @@ class AppMessages(enum.Enum):
         "Invalid custom field! one of the fields should be filled. fields are :{}"
     )
     MUST_FIELD = _("{} should filed!")
+    CAN_NOT_GREATER_THAN_MILEAGE = _(
+        "The field {} is greater than mileage you entered!"
+    )
