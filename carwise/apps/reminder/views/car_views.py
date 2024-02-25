@@ -116,3 +116,8 @@ class MileageView(CreateAPIView, UpdateAPIView):
             return super().update(request, *args, **kwargs)
         except ValidationError as e:
             return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["car"] = self.get_car()
+        return context

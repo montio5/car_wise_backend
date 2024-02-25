@@ -86,15 +86,7 @@ class Mileage(models.Model):
     clutch_plate = models.IntegerField(null=True)
 
     def __str__(self):
-        return (
-            self.id
-            + "-"
-            + self.car.name
-            + " id:"
-            + self.car.id
-            + "-"
-            + self.created_date
-        )
+        return str(self.id) + "-" + self.car.name + " id:" + str(self.car.id)
 
 
 # --------------------------------------

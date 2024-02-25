@@ -1,6 +1,7 @@
 # Django
 from django.conf import settings
 from django.utils import timezone
+import secrets
 
 # Third Party Packages
 from rest_framework import serializers
@@ -62,20 +63,55 @@ class MileageSerializer(serializers.ModelSerializer):
         model = Mileage
         exclude = ["car"]
 
-    def validate(self, data):
-        mileage = data.get("mileage")
+    def validate(self, validated_data):
+        mileage = validated_data.get("mileage")
         if mileage is not None:
-            for field_name in data:
-                if isinstance(data[field_name], int) and data[field_name] > mileage:
+            for field_name in validated_data:
+                if (
+                    isinstance(validated_data[field_name], int)
+                    and validated_data[field_name] > mileage
+                ):
                     raise ValidationError(
                         AppMessages.CAN_NOT_GREATER_THAN_MILEAGE.value.format(
                             field_name
                         )
                     )
-        # TODO : in add, use previous data and add to new one
-        # TODO : compare to the previous mileage and check... no item should be less than before oil-kilometer can be more than previous
+        car = self.context.get("car", None)
+        if car is None:
+            return validated_data
+        # check the entered amount not less than previous
+        previous_mileages = Mileage.objects.filter(car=car.id).order_by("-created_date")
         # breakpoint()
-        return data
+        if previous_mileages:
+            previous_mileage = previous_mileages.first()
+            for field_name, field_value in validated_data.items():
+                # Check if the field is an integer and exists in the previous mileage object
+                if isinstance(field_value, int) and hasattr(
+                    previous_mileage, field_name
+                ):
+                    # Get the corresponding field value from the previous mileage object
+                    previous_field_value = getattr(previous_mileage, field_name)
+                    # Compare the field values
+                    if field_value < previous_field_value:
+                        raise serializers.ValidationError(
+                            AppMessages.INVALID_UPDATE_MILEAGE.value.format(field_name)
+                        )
+
+        return validated_data
+
+    def create(self, validated_data):
+        car = validated_data.get("car")
+        last_mileage = Mileage.objects.filter(car=car).order_by("-created_date")
+        if last_mileage:
+            cloned_instance = Mileage.objects.get(pk=last_mileage.first().id)
+            cloned_instance.pk = None  # Reset primary key to create a new object
+            cloned_instance.unique_key = secrets.token_urlsafe(32)
+
+            for attr, value in validated_data.items():
+                setattr(cloned_instance, attr, value)
+            cloned_instance.save()
+            return cloned_instance
+        return super().create(validated_data)
 
 
 # __________________  Car Serializer ___________________ #
