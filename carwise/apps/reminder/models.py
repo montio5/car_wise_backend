@@ -54,7 +54,7 @@ class Mileage(models.Model):
     car = models.ForeignKey(
         "Car", on_delete=models.CASCADE, related_name="car_mileages"
     )
-    mileage = models.IntegerField()
+    mileage = models.PositiveBigIntegerField()
     created_date = models.DateTimeField(auto_now_add=True)
     unique_key = models.CharField(
         unique=True,
@@ -62,28 +62,28 @@ class Mileage(models.Model):
         max_length=70,
     )
     # oils
-    engine_oil = models.IntegerField(null=True)
-    gearbox_oil = models.IntegerField(null=True)
-    brake_fluid = models.IntegerField(null=True)
-    hydraulic_fluid = models.IntegerField(null=True)
+    engine_oil = models.PositiveBigIntegerField(null=True)
+    gearbox_oil = models.PositiveBigIntegerField(null=True)
+    brake_fluid = models.PositiveBigIntegerField(null=True)
+    hydraulic_fluid = models.PositiveBigIntegerField(null=True)
     hydraulic_fluid_updated_date = models.DateTimeField(null=True)
     # filters
-    oil_filter = models.IntegerField(null=True)
-    fuel_filter = models.IntegerField(null=True)
-    air_filter = models.IntegerField(null=True)
-    cabin_air_filter = models.IntegerField(null=True)
+    oil_filter = models.PositiveBigIntegerField(null=True)
+    fuel_filter = models.PositiveBigIntegerField(null=True)
+    air_filter = models.PositiveBigIntegerField(null=True)
+    cabin_air_filter = models.PositiveBigIntegerField(null=True)
     cabin_air_filter_updated_date = models.DateTimeField(null=True)
     # belts
-    timing_belt = models.IntegerField(null=True)
+    timing_belt = models.PositiveBigIntegerField(null=True)
     timing_belt_filter_updated_date = models.DateTimeField(null=True)
-    alternator_belt = models.IntegerField(null=True)
+    alternator_belt = models.PositiveBigIntegerField(null=True)
     #
-    front_brake_pads = models.IntegerField(null=True)
-    rear_brake_pads = models.IntegerField(null=True)
-    spark_plug = models.IntegerField(null=True)
-    front_suspension = models.IntegerField(null=True)
-    cooler_gas = models.IntegerField(null=True)
-    clutch_plate = models.IntegerField(null=True)
+    front_brake_pads = models.PositiveBigIntegerField(null=True)
+    rear_brake_pads = models.PositiveBigIntegerField(null=True)
+    spark_plug = models.PositiveBigIntegerField(null=True)
+    front_suspension = models.PositiveBigIntegerField(null=True)
+    cooler_gas = models.PositiveBigIntegerField(null=True)
+    clutch_plate = models.PositiveBigIntegerField(null=True)
 
     def __str__(self):
         return str(self.id) + "-" + self.car.name + " id:" + str(self.car.id)
@@ -95,26 +95,26 @@ class Mileage(models.Model):
 class CarCustomSetup(models.Model):
     car = models.OneToOneField("Car", on_delete=models.CASCADE)
     # oils
-    engine_oil = models.IntegerField(default=ENGINE_OIL)
-    brake_fluid = models.IntegerField(default=BRAKE_FLUID)
-    hydraulic_fluid = models.IntegerField(default=HYDRAULIC_FLUID)
-    gearbox_oil = models.IntegerField(default=GEARBOX_OIL)
+    engine_oil = models.PositiveBigIntegerField(default=ENGINE_OIL)
+    brake_fluid = models.PositiveBigIntegerField(default=BRAKE_FLUID)
+    hydraulic_fluid = models.PositiveBigIntegerField(default=HYDRAULIC_FLUID)
+    gearbox_oil = models.PositiveBigIntegerField(default=GEARBOX_OIL)
     # filters
-    oil_filter = models.IntegerField(default=OIL_FILTER)
-    fuel_filter = models.IntegerField(default=FUEL_FILTER)
-    air_filter = models.IntegerField(default=AIR_FILTER)
-    cabin_air_filter = models.IntegerField(default=CABIN_AIR_FILTER)
+    oil_filter = models.PositiveBigIntegerField(default=OIL_FILTER)
+    fuel_filter = models.PositiveBigIntegerField(default=FUEL_FILTER)
+    air_filter = models.PositiveBigIntegerField(default=AIR_FILTER)
+    cabin_air_filter = models.PositiveBigIntegerField(default=CABIN_AIR_FILTER)
     # belts
-    timing_belt = models.IntegerField(default=TIMING_BELT)
-    timing_belt_filter_updated_date = models.IntegerField(default=TIMING_BELT_MAX_YEAR)
-    alternator_belt = models.IntegerField(default=ALTERNATOR_BELT)
+    timing_belt = models.PositiveBigIntegerField(default=TIMING_BELT)
+    timing_belt_filter_max_year = models.PositiveBigIntegerField(default=TIMING_BELT_MAX_YEAR)
+    alternator_belt = models.PositiveBigIntegerField(default=ALTERNATOR_BELT)
     #
-    front_brake_pads = models.IntegerField(default=FRONT_BRAKE_PAD)
-    rear_brake_pads = models.IntegerField(default=REAR_BRAKE_PAD)
-    spark_plug = models.IntegerField(default=SPARK_PLUG)
-    front_suspension = models.IntegerField(default=FRONT_SUSPENSION)
-    cooler_gas_change_years = models.IntegerField(default=COOLER_GAS_CHANGE_YEARS)
-    clutch_plate = models.IntegerField(default=CLUTCH_PLATE)
+    front_brake_pads = models.PositiveBigIntegerField(default=FRONT_BRAKE_PAD)
+    rear_brake_pads = models.PositiveBigIntegerField(default=REAR_BRAKE_PAD)
+    spark_plug = models.PositiveBigIntegerField(default=SPARK_PLUG)
+    front_suspension = models.PositiveBigIntegerField(default=FRONT_SUSPENSION)
+    cooler_gas_change_years = models.PositiveBigIntegerField(default=COOLER_GAS_CHANGE_YEARS)
+    clutch_plate = models.PositiveBigIntegerField(default=CLUTCH_PLATE)
 
     def __str__(self):
         return str(self.id) + "-" + self.car.name + " car-id:" + str(self.car.id)
@@ -129,10 +129,10 @@ class CustomFiled(models.Model):
         "Car", on_delete=models.CASCADE, related_name="car_custom_fileds"
     )
     name = models.CharField(max_length=256)
-    mileage_per_change = models.IntegerField(null=True)
-    month_per_changes = models.IntegerField(null=True)
+    mileage_per_change = models.PositiveBigIntegerField(null=True)
+    month_per_changes = models.PositiveBigIntegerField(null=True)
     #
-    last_mileage_changed = models.IntegerField(null=True)
+    last_mileage_changed = models.PositiveBigIntegerField(null=True)
     last_date_changed = models.DateField(null=True)
 
     def __str__(self):

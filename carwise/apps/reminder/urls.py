@@ -30,18 +30,18 @@ mileage = [
     path(
         "<str:unique_key>/",
         MileageView.as_view(),
-        name="edit_mileage",
+        name="add_edit_get_mileage",
     ),
 ]
 # _________________________ custom field ________________________ #
 
 custom_field = [
-    path("", CustomFieldListAPI.as_view(), name="car_custom_fields_list"),
-    path("new/", CustomFieldAddAPI.as_view(), name="add_car"),
+    path("", CustomFieldListAPI.as_view(), name="custom_fields_list"),
+    path("new/", CustomFieldAddAPI.as_view(), name="add_custom_field"),
     path(
         "<int:id>/",
         CustomFieldUpdateDestroyAPI.as_view(),
-        name="car_edit_delete",
+        name="custom_field_edit_delete",
     ),
 ]
 # _________________________ car custom setup ________________________ #

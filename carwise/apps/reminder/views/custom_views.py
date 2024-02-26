@@ -118,6 +118,11 @@ class CarCustomSetupUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def delete(self, request, *args, **kwargs):
+        car_object = self.get_object()
+        CarCustomSetup.objects.create(car=car_object)
+        return super().delete(request, *args, **kwargs)
+
     def get_object(self):
         return get_object_or_404(
             CarCustomSetup,

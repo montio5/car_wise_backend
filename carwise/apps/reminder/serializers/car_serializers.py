@@ -58,6 +58,7 @@ class MileageSerializer(serializers.ModelSerializer):
     """serializer for getting, updating mileage detail"""
 
     unique_key = serializers.CharField(read_only=True)
+    created_date = serializers.DateTimeField(format="%d.%m.%Y", read_only=True)
 
     class Meta:
         model = Mileage
@@ -91,11 +92,14 @@ class MileageSerializer(serializers.ModelSerializer):
                 ):
                     # Get the corresponding field value from the previous mileage object
                     previous_field_value = getattr(previous_mileage, field_name)
-                    # Compare the field values
-                    if field_value < previous_field_value:
-                        raise serializers.ValidationError(
-                            AppMessages.INVALID_UPDATE_MILEAGE.value.format(field_name)
-                        )
+                    if isinstance(previous_field_value, int):
+                        # Compare the field values
+                        if field_value < previous_field_value:
+                            raise serializers.ValidationError(
+                                AppMessages.INVALID_UPDATE_MILEAGE.value.format(
+                                    field_name
+                                )
+                            )
 
         return validated_data
 
