@@ -50,15 +50,13 @@ class CarAddAPITestCases(TestCase):
                 "fuel_filter": 2147483647,
                 "air_filter": 2147483647,
                 "cabin_air_filter": 2147483647,
-                "cabin_air_filter_updated_date": "2022-04-12",
                 "timing_belt": 2147483647,
-                "timing_belt_filter_updated_date": "2022-04-12",
+                "timing_belt_last_updated_date": "2022-04-12",
                 "alternator_belt": 2147483647,
                 "front_brake_pads": 2147483647,
                 "rear_brake_pads": 2147483647,
                 "spark_plug": 2147483647,
                 "front_suspension": 2147483647,
-                "cooler_gas": 2147483647,
                 "clutch_plate": 2147483647,
             },
         }
@@ -112,10 +110,6 @@ class CarAddAPITestCases(TestCase):
             self.data["mileage_info"]["gearbox_oil"],
         )
         self.assertEqual(
-            response.data["mileage_info"]["brake_fluid"],
-            self.data["mileage_info"]["brake_fluid"],
-        )
-        self.assertEqual(
             response.data["mileage_info"]["hydraulic_fluid"],
             self.data["mileage_info"]["hydraulic_fluid"],
         )
@@ -135,10 +129,6 @@ class CarAddAPITestCases(TestCase):
             response.data["mileage_info"]["cabin_air_filter"],
             self.data["mileage_info"]["cabin_air_filter"],
         )
-        self.assertIn(
-            self.data["mileage_info"]["cabin_air_filter_updated_date"],
-            response.data["mileage_info"]["cabin_air_filter_updated_date"],
-        )
         self.assertEqual(
             response.data["mileage_info"]["timing_belt"],
             self.data["mileage_info"]["timing_belt"],
@@ -150,10 +140,6 @@ class CarAddAPITestCases(TestCase):
         self.assertEqual(
             response.data["mileage_info"]["front_suspension"],
             self.data["mileage_info"]["front_suspension"],
-        )
-        self.assertEqual(
-            response.data["mileage_info"]["cooler_gas"],
-            self.data["mileage_info"]["cooler_gas"],
         )
         self.assertEqual(
             response.data["mileage_info"]["clutch_plate"],
@@ -258,10 +244,8 @@ class CarUpdateDeleteAPITestCase(APITestCase):
                 "oil_filter": 2147483647,
                 "fuel_filter": 2147483647,
                 "air_filter": 2147483647,
-                "cabin_air_filter": 2147483647,
-                "cabin_air_filter_updated_date": "2022-04-12",
                 "timing_belt": 2147483647,
-                "timing_belt_filter_updated_date": "2022-04-12",
+                "timing_belt_last_updated_date": "2022-04-12",
                 "alternator_belt": 2147483647,
                 "front_brake_pads": 2147483647,
                 "rear_brake_pads": 2147483647,

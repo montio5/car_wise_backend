@@ -2,7 +2,7 @@
 import logging
 
 # First Party Imports
-from apps.reminder.models import Car, Mileage
+from apps.reminder.models import Car
 from apps.reminder.serializers.car_serializers import (
     CarSerializer,
     MileageSerializer,
@@ -20,7 +20,6 @@ from rest_framework.generics import (
     get_object_or_404,
 )
 from drf_spectacular.utils import extend_schema
-from rest_framework.views import APIView
 from rest_framework.exceptions import ValidationError
 
 from rest_framework.permissions import IsAuthenticated
@@ -93,14 +92,14 @@ class MileageView(CreateAPIView, UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = MileageSerializer
     http_method_names = ["put", "post", "get"]
-
-    def get_car(self):
+    
+    def get_object(self):
         return get_object_or_404(
             Car, unique_key=self.kwargs["unique_key"], user=self.request.user
         )
 
     def perform_create(self, serializer):
-        serializer.save(car=self.get_car())
+        serializer.save(car=self.get_object())
 
     def perform_update(self, serializer):
         serializer.save()
@@ -119,5 +118,5 @@ class MileageView(CreateAPIView, UpdateAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context["car"] = self.get_car()
+        context["car"] = self.get_object()
         return context

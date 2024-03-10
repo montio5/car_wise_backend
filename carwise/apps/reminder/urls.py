@@ -12,6 +12,7 @@ from apps.reminder.views.custom_views import (
     CustomFieldListAPI,
     CustomFieldUpdateDestroyAPI,
 )
+from apps.reminder.views.general_views import DataChecker
 
 # _________________________ car ________________________ #
 
@@ -53,6 +54,16 @@ car_custom_setup = [
         name="car_setup_edit_delete",
     ),
 ]
+# _________________________ car custom setup ________________________ #
+
+check_data = [
+    path(
+        "",
+        DataChecker.as_view(),
+        name="check_data",
+    ),
+]
+
 # _________________________________________________ #
 
 urlpatterns = [
@@ -60,4 +71,6 @@ urlpatterns = [
     path("mileage/", include(mileage)),
     path("custom-field/<str:car_unique_key>/", include(custom_field)),
     path("custom-setup/", include(car_custom_setup)),
+    path("check-data/", include(check_data)),
+
 ]

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 import functools
 import secrets
+from django.utils.translation import gettext_lazy as _
+
 
 YEARLY_MIALAGE = 50000
 ENGINE_OIL = 6000
@@ -62,28 +64,45 @@ class Mileage(models.Model):
         max_length=70,
     )
     # oils
-    engine_oil = models.PositiveBigIntegerField(null=True)
-    gearbox_oil = models.PositiveBigIntegerField(null=True)
-    brake_fluid = models.PositiveBigIntegerField(null=True)
-    hydraulic_fluid = models.PositiveBigIntegerField(null=True)
+    engine_oil = models.PositiveBigIntegerField(null=True, verbose_name=_("Engine Oil"))
+    gearbox_oil = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Gearbox Oil")
+    )
+    hydraulic_fluid = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Hydraulic Fluid")
+    )
     hydraulic_fluid_updated_date = models.DateTimeField(null=True)
     # filters
-    oil_filter = models.PositiveBigIntegerField(null=True)
-    fuel_filter = models.PositiveBigIntegerField(null=True)
-    air_filter = models.PositiveBigIntegerField(null=True)
-    cabin_air_filter = models.PositiveBigIntegerField(null=True)
-    cabin_air_filter_updated_date = models.DateTimeField(null=True)
+    oil_filter = models.PositiveBigIntegerField(null=True, verbose_name=_("Oil Filter"))
+    fuel_filter = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Fuel Filter")
+    )
+    air_filter = models.PositiveBigIntegerField(null=True, verbose_name=_("Air Filter"))
+    cabin_air_filter = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Cabin Air Filter")
+    )
     # belts
-    timing_belt = models.PositiveBigIntegerField(null=True)
-    timing_belt_filter_updated_date = models.DateTimeField(null=True)
-    alternator_belt = models.PositiveBigIntegerField(null=True)
+    timing_belt = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Timing Belt")
+    )
+    timing_belt_last_updated_date = models.DateTimeField(null=True)
+    alternator_belt = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Alternator Belt")
+    )
     #
-    front_brake_pads = models.PositiveBigIntegerField(null=True)
-    rear_brake_pads = models.PositiveBigIntegerField(null=True)
-    spark_plug = models.PositiveBigIntegerField(null=True)
-    front_suspension = models.PositiveBigIntegerField(null=True)
-    cooler_gas = models.PositiveBigIntegerField(null=True)
-    clutch_plate = models.PositiveBigIntegerField(null=True)
+    front_brake_pads = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Front Brake Pads")
+    )
+    rear_brake_pads = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Rear Brake Pads")
+    )
+    spark_plug = models.PositiveBigIntegerField(null=True, verbose_name=_("Spark Plug"))
+    front_suspension = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Front Suspension")
+    )
+    clutch_plate = models.PositiveBigIntegerField(
+        null=True, verbose_name=_("Clutch Plate")
+    )
 
     def __str__(self):
         return str(self.id) + "-" + self.car.name + " id:" + str(self.car.id)
@@ -93,10 +112,9 @@ class Mileage(models.Model):
 
 
 class CarCustomSetup(models.Model):
-    car = models.OneToOneField("Car", on_delete=models.CASCADE)
+    car = models.OneToOneField("Car", on_delete=models.CASCADE, related_name="setup")
     # oils
     engine_oil = models.PositiveBigIntegerField(default=ENGINE_OIL)
-    brake_fluid = models.PositiveBigIntegerField(default=BRAKE_FLUID)
     hydraulic_fluid = models.PositiveBigIntegerField(default=HYDRAULIC_FLUID)
     gearbox_oil = models.PositiveBigIntegerField(default=GEARBOX_OIL)
     # filters
@@ -106,14 +124,13 @@ class CarCustomSetup(models.Model):
     cabin_air_filter = models.PositiveBigIntegerField(default=CABIN_AIR_FILTER)
     # belts
     timing_belt = models.PositiveBigIntegerField(default=TIMING_BELT)
-    timing_belt_filter_max_year = models.PositiveBigIntegerField(default=TIMING_BELT_MAX_YEAR)
+    timing_belt_max_year = models.PositiveBigIntegerField(default=TIMING_BELT_MAX_YEAR)
     alternator_belt = models.PositiveBigIntegerField(default=ALTERNATOR_BELT)
     #
     front_brake_pads = models.PositiveBigIntegerField(default=FRONT_BRAKE_PAD)
     rear_brake_pads = models.PositiveBigIntegerField(default=REAR_BRAKE_PAD)
     spark_plug = models.PositiveBigIntegerField(default=SPARK_PLUG)
     front_suspension = models.PositiveBigIntegerField(default=FRONT_SUSPENSION)
-    cooler_gas_change_years = models.PositiveBigIntegerField(default=COOLER_GAS_CHANGE_YEARS)
     clutch_plate = models.PositiveBigIntegerField(default=CLUTCH_PLATE)
 
     def __str__(self):

@@ -61,9 +61,7 @@ class MileageFactory(factory.django.DjangoModelFactory):
     #
     hydraulic_fluid_updated_date = factory.Faker("date_of_birth")
     #
-    cabin_air_filter_updated_date = factory.Faker("date_of_birth")
-    #
-    timing_belt_filter_updated_date = factory.Faker("date_of_birth")
+    timing_belt_last_updated_date = factory.Faker("date_of_birth")
     created_date = factory.fuzzy.FuzzyDateTime(
         datetime.datetime(2023, 1, 1, tzinfo=datetime.timezone.utc),
         datetime.datetime.now().replace(tzinfo=datetime.timezone.utc),

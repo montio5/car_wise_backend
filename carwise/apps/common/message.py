@@ -15,3 +15,9 @@ class AppMessages(enum.Enum):
         "The field {} is greater than mileage you entered!"
     )
     INVALID_UPDATE_MILEAGE = _("{} cannot be lower than the previous mileage.")
+
+    CHECK_FIELD_MILEAGE = _("Your {} is overdue for replacement based on mileage.")
+    CHECKER_FIELD_DATE = _(
+        "It's been a considerable amount of time since your last {} change."
+    )
+    CHECK_PLEASE_MESSAGE = _("Please check {} . long time no check!")
