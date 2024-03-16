@@ -44,8 +44,11 @@ INSTALLED_APPS = [
     #
     "apps.reminder",
     "apps.user",
+    "apps.common",
 ]
+
 REST_FRAMEWORK = {
+    # 'EXCEPTION_HANDLER': 'apps.reminder.exception_handler.custom_exception_handler',
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
@@ -61,6 +64,9 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "ALGORITHM": "HS256",
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
 }
 # SWAGGER_SETTINGS = {
 #     "SECURITY_DEFINITIONS": {
@@ -90,6 +96,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
 ]
 
 ROOT_URLCONF = "carwise.urls"
@@ -150,14 +157,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
 
 USE_I18N = True
 
+USE_L10N = True
 USE_TZ = True
-
+USE_THOUSAND_SEPARATOR = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -168,3 +174,8 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LANGUAGES = [
+    ("en", "English"),
+    ("fa", "farsi"),
+]

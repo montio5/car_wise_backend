@@ -14,6 +14,7 @@ class AppMessages(enum.Enum):
     CAN_NOT_GREATER_THAN_MILEAGE = _(
         "The field {} is greater than mileage you entered!"
     )
+    USER_EXISTS = _("This email is taken!")
     INVALID_UPDATE_MILEAGE = _("{} cannot be lower than the previous mileage.")
 
     CHECK_FIELD_MILEAGE = _("Your {} is overdue for replacement based on mileage.")

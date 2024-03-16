@@ -1,6 +1,8 @@
 # Standard Library
 import logging
 
+from django.http import HttpResponseNotFound
+
 # First Party Imports
 from apps.reminder.models import Car
 from apps.reminder.serializers.car_serializers import (
@@ -104,6 +106,14 @@ class MileageView(CreateAPIView, UpdateAPIView):
     def perform_update(self, serializer):
         serializer.save()
 
+    def get(self, request, *args, **kwargs):
+        car = self.get_object()
+        mileage = car.car_mileages.all().order_by("-created_date").first()
+        if mileage:
+            serializer = MileageSerializer(instance=mileage)
+            return Response(serializer.data)
+        return HttpResponseNotFound()
+    
     def create(self, request, *args, **kwargs):
         try:
             return super().create(request, *args, **kwargs)
