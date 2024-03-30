@@ -39,7 +39,10 @@ class DataChecker(APIView):
     def custom_field_check(self, car, mileage):
         custom_fields = car.car_custom_fileds.all()
         for field in custom_fields:
-            if field.mileage_per_change is not None or field.month_per_changes is not None:
+            if (
+                field.mileage_per_change is not None
+                or field.month_per_changes is not None
+            ):
                 if car.unique_key not in self.message_dict:
                     self.message_dict[car.unique_key] = {}
                 if "custom_field" not in self.message_dict:
@@ -62,23 +65,19 @@ class DataChecker(APIView):
                             ),
                             "car": car.name,
                         }
-                except :
+                except:
                     pass
             expected_date = field.last_date_changed + timedelta(
-                    days=30 * field.month_per_changes
-                )
+                days=30 * field.month_per_changes
+            )
             # breakpoint()
             if expected_date < timezone.now().date():
-                    self.message_dict[car.unique_key]["custom_field"][field.id][
-                        "date"
-                    ] = {
-                        "status": CUSTOM,
-                        "field_name": field.name,
-                        "message": AppMessages.CHECKER_FIELD_DATE.value.format(
-                            field.name
-                        ),
-                        "car": car.name,
-                    }
+                self.message_dict[car.unique_key]["custom_field"][field.id]["date"] = {
+                    "status": CUSTOM,
+                    "field_name": field.name,
+                    "message": AppMessages.CHECKER_FIELD_DATE.value.format(field.name),
+                    "car": car.name,
+                }
 
     def original_fields_check(self, car, mileage):
         field_details = {
@@ -104,6 +103,7 @@ class DataChecker(APIView):
         for field_name, details in field_details.items():
             field_value = getattr(mileage, field_name)
             if field_name == "timing_belt_last_updated_date":
+                breakpoint()
                 if (
                     field_value is not None
                     and field_value
