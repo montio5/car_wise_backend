@@ -1,0 +1,53 @@
+virtualenv venv
+source venv/bin/activate
+
+--update branch--
+git pull
+
+then refresh
+--refresh--
+touch /var/www/cochewen_pythonanywhere_com_wsgi.py
+
+-----set up ---
+
+1-Once you have created your account, log in and go to the "Web" tab.
+2-Click on the "Add a new web app" button.
+3-Choose the "Manual configuration" option and select the version of Python that you are using in your project.
+4-clone via bash
+5-python3.9 -m venv venv
+
+6- edit wsgi:
+import os
+import sys
+
+path = '/home/yourusername/yourprojectname'
+if path not in sys.path:
+    sys.path.insert(0, path)
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'yourprojectname.settings'
+
+from yourprojectname.wsgi import application
+
+7-Save the configuration and click on the "Reload" button to start the deployment process.
+8-Once the deployment is complete, go to the "Web" tab and click on the "Reload" button for your web app.
+9-Next, you need to configure your database settings. Go to the "Files" tab and open the /home/yourusername/yourprojectname/yourprojectname/settings.py file.
+
+10- edit setting.py so that :
+MIDDLEWARE = [
+    # ...
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # ...
+]
+
+INSTALLED_APPS = [
+    # ...
+    'whitenoise.runserver_nostatic',
+    # ...
+]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+11- run this :
+python manage.py collectstatic --noinput
+
+12- migrate and ...
