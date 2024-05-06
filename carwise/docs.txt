@@ -1,3 +1,7 @@
+--script
+ python manage.py runscript -v2 car-company
+
+--venv
 virtualenv venv
 source venv/bin/activate
 
