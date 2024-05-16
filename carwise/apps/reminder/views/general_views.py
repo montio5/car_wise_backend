@@ -4,19 +4,37 @@ from datetime import timedelta
 from django.utils import timezone
 
 # First Party Imports
-from apps.reminder.models import Mileage
+from apps.reminder.models import CarCompany, Mileage
 from rest_framework.views import APIView
+from apps.reminder.serializers.general_serializers import CarCompanyListSerializer
 
 # Third Party Packages
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
+from rest_framework.generics import ListAPIView
 
 SERIOUS = "Serious"
 MEDIUM = "Medium"
 INFO = "Informational"
 CUSTOM = "CUSTOM"
+
+# ______________________ car company List API ______________________ #
+
+
+@extend_schema(tags=["general"])
+class CarListAPI(ListAPIView):
+    """Get  car list"""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = CarCompanyListSerializer
+
+    def get_queryset(self):
+        return CarCompany.objects.all()
+
+
+# ______________________ Data Checker API ______________________ #
 
 
 @extend_schema(tags=["checker"])

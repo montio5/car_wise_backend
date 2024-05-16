@@ -12,8 +12,14 @@ from apps.reminder.views.custom_views import (
     CustomFieldListAPI,
     CustomFieldUpdateDestroyAPI,
 )
-from apps.reminder.views.general_views import DataChecker
+from apps.reminder.views.general_views import CarListAPI, DataChecker
 
+
+# _________________________ car ________________________ #
+
+general_apis = [
+    path("car-models", CarListAPI.as_view(), name="car_models"),
+]
 # _________________________ car ________________________ #
 
 car = [
@@ -72,5 +78,5 @@ urlpatterns = [
     path("custom-field/<str:car_unique_key>/", include(custom_field)),
     path("custom-setup/", include(car_custom_setup)),
     path("check-data/", include(check_data)),
-
+    path("", include(general_apis)),
 ]

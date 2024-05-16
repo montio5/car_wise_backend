@@ -2,7 +2,6 @@
 import json
 
 # Django
-from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -12,7 +11,6 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 # First Party Imports
-from apps.common.message import AppMessages
 from apps.reminder.models import Car, CarCustomSetup, CustomFiled, Mileage
 from apps.reminder.tests.factories import (
     CarCompanyFactory,
@@ -361,5 +359,3 @@ class CarUpdateDeleteAPITestCase(APITestCase):
         self.assertEqual(0, Mileage.objects.all().count())
         self.assertEqual(0, CustomFiled.objects.all().count())
         self.assertEqual(0, CarCustomSetup.objects.all().count())
-
-

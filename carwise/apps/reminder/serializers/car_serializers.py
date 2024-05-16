@@ -1,6 +1,4 @@
 # Django
-from django.conf import settings
-from django.utils import timezone
 import secrets
 
 # Third Party Packages
@@ -10,7 +8,6 @@ from apps.common.message import AppMessages
 
 from apps.reminder.models import (
     Car,
-    CarCompany,
     CarCustomSetup,
     CustomFiled,
     Mileage,
