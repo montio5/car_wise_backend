@@ -121,7 +121,6 @@ class DataChecker(APIView):
         for field_name, details in field_details.items():
             field_value = getattr(mileage, field_name)
             if field_name == "timing_belt_last_updated_date":
-                breakpoint()
                 if (
                     field_value is not None
                     and field_value

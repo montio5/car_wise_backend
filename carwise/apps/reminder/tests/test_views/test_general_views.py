@@ -85,7 +85,6 @@ class CustomCheckAPITestCases(TestCase):
         )
         # breakpoint()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        breakpoint()
         # self.assertEqual(
         #     set(response.data.keys()),
         #     {
