@@ -23,17 +23,17 @@ class CustomFieldSerializer(serializers.ModelSerializer):
         ]
 
     def validate_last_mileage_changed(self, value):
-        # breakpoint()
-        car_object = self.context.get("car_object")
-        last_mileage = (
-            car_object.car_mileages.all().order_by("-created_date").first().mileage
-        )
-        if value > last_mileage:
-            raise ValidationError(
-                AppMessages.CAN_NOT_GREATER_THAN_MILEAGE.value.format(
-                    "last_mileage_changed"
-                )
+        if value is not None:
+            car_object = self.context.get("car_object")
+            last_mileage = (
+                car_object.car_mileages.all().order_by("-created_date").first().mileage
             )
+            if value > last_mileage:
+                raise ValidationError(
+                    AppMessages.CAN_NOT_GREATER_THAN_MILEAGE.value.format(
+                        "last_mileage_changed"
+                    )
+                )
         return value
 
     def validate(self, validated_data):
