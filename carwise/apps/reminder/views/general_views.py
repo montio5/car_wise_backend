@@ -85,18 +85,19 @@ class DataChecker(APIView):
                         }
                 except:
                     pass
-            expected_date = field.last_date_changed + timedelta(
-                days=30 * field.month_per_changes
-            )
-            # breakpoint()
-            if expected_date < timezone.now().date():
-                self.message_dict[car.unique_key]["custom_field"][field.id]["date"] = {
-                    "status": CUSTOM,
-                    "field_name": field.name,
-                    "message": AppMessages.CHECKER_FIELD_DATE.value.format(field.name),
-                    "car": car.name,
-                }
-
+            try:
+                expected_date = field.last_date_changed + timedelta(
+                    days=30 * field.month_per_changes
+                )
+                if expected_date < timezone.now().date():
+                    self.message_dict[car.unique_key]["custom_field"][field.id]["date"] = {
+                        "status": CUSTOM,
+                        "field_name": field.name,
+                        "message": AppMessages.CHECKER_FIELD_DATE.value.format(field.name),
+                        "car": car.name,
+                    }
+            except TypeError:
+                    pass
     def original_fields_check(self, car, mileage):
         field_details = {
             "engine_oil": {"status": SERIOUS},
