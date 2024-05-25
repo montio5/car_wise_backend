@@ -53,51 +53,50 @@ class DataChecker(APIView):
                     self.custom_field_check(car, last_mileage)
                     self.original_fields_check(car, last_mileage)
             return Response(self.message_dict, status.HTTP_200_OK)
-
+    
     def custom_field_check(self, car, mileage):
         custom_fields = car.car_custom_fileds.all()
         for field in custom_fields:
-            if (
-                field.mileage_per_change is not None
-                or field.month_per_changes is not None
-            ):
-                if car.unique_key not in self.message_dict:
-                    self.message_dict[car.unique_key] = {}
-                if "custom_field" not in self.message_dict:
-                    self.message_dict[car.unique_key]["custom_field"] = {}
-                if field.id not in self.message_dict[car.unique_key]["custom_field"]:
-                    self.message_dict[car.unique_key]["custom_field"][field.id] = {}
+            if field.mileage_per_change is not None or field.month_per_changes is not None:
+                car_key = car.unique_key
+                if car_key not in self.message_dict:
+                    self.message_dict[car_key] = {field.id: {}}
+                if field.id not in self.message_dict[car_key]:
+                    self.message_dict[car_key][field.id] = {}
 
-                try:
-                    if (
-                        mileage.mileage
-                        > field.mileage_per_change + field.last_mileage_changed
-                    ):
-                        self.message_dict[car.unique_key]["custom_field"][field.id][
-                            "mileage"
-                        ] = {
-                            "status": CUSTOM,
-                            "field_name": field.name,
-                            "message": AppMessages.CHECK_FIELD_MILEAGE.value.format(
-                                field.name
-                            ),
-                            "car": car.name,
-                        }
-                except:
-                    pass
-            try:
-                expected_date = field.last_date_changed + timedelta(
-                    days=30 * field.month_per_changes
-                )
-                if expected_date < timezone.now().date():
-                    self.message_dict[car.unique_key]["custom_field"][field.id]["date"] = {
-                        "status": CUSTOM,
-                        "field_name": field.name,
-                        "message": AppMessages.CHECKER_FIELD_DATE.value.format(field.name),
-                        "car": car.name,
-                    }
-            except TypeError:
-                    pass
+                # Check mileage condition
+                self.check_mileage_condition(car, field, mileage)
+
+                # Check date condition
+                self.check_date_condition(car, field)
+
+    def check_mileage_condition(self, car, field, mileage):
+        try:
+            if mileage.mileage > (field.mileage_per_change + field.last_mileage_changed):
+                self.message_dict[car.unique_key][field.id]= {
+                    "status": "CUSTOM",
+                    "field_name": field.name,
+                    "message": AppMessages.CHECK_FIELD_MILEAGE.value.format(field.name),
+                    "car": car.name,
+                }
+        except TypeError:
+            pass
+
+    def check_date_condition(self, car, field):
+        try:
+            expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
+            if expected_date < timezone.now().date():
+                self.message_dict[car.unique_key][field.id]= {
+                    "status": "CUSTOM",
+                    "field_name": field.name,
+                    "message": AppMessages.CHECKER_FIELD_DATE.value.format(field.name),
+                    "car": car.name,
+                }
+        except TypeError:
+            pass
+
+
+
     def original_fields_check(self, car, mileage):
         field_details = {
             "engine_oil": {"status": SERIOUS},
