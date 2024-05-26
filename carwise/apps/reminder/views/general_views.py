@@ -18,7 +18,7 @@ from rest_framework.generics import ListAPIView
 SERIOUS = "Serious"
 MEDIUM = "Medium"
 INFO = "Informational"
-CUSTOM = "CUSTOM"
+CUSTOM = "Custom"
 
 # ______________________ car company List API ______________________ #
 
