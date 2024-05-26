@@ -74,7 +74,7 @@ class DataChecker(APIView):
         try:
             if mileage.mileage > (field.mileage_per_change + field.last_mileage_changed):
                 self.message_dict[car.unique_key][field.id]= {
-                    "status": "CUSTOM",
+                    "status": CUSTOM,
                     "field_name": field.name,
                     "message": AppMessages.CHECK_FIELD_MILEAGE.value.format(field.name),
                     "car": car.name,
@@ -87,7 +87,7 @@ class DataChecker(APIView):
             expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
             if expected_date < timezone.now().date():
                 self.message_dict[car.unique_key][field.id]= {
-                    "status": "CUSTOM",
+                    "status": CUSTOM,
                     "field_name": field.name,
                     "message": AppMessages.CHECKER_FIELD_DATE.value.format(field.name),
                     "car": car.name,
