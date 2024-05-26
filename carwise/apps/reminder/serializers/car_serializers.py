@@ -56,6 +56,7 @@ class MileageSerializer(serializers.ModelSerializer):
 
     unique_key = serializers.CharField(read_only=True)
     created_date = serializers.DateTimeField(format="%d.%m.%Y", read_only=True)
+    custom_fields = CustomFieldListSerializer(many=True, required=False, source ="car.car_custom_fileds")
 
     class Meta:
         model = Mileage
@@ -79,7 +80,6 @@ class MileageSerializer(serializers.ModelSerializer):
             return validated_data
         # check the entered amount not less than previous
         previous_mileages = Mileage.objects.filter(car=car.id).order_by("-created_date")
-        # breakpoint()
         if previous_mileages:
             previous_mileage = previous_mileages.first()
             for field_name, field_value in validated_data.items():
@@ -99,6 +99,7 @@ class MileageSerializer(serializers.ModelSerializer):
                             )
 
         return validated_data
+
 
     def create(self, validated_data):
         car = validated_data.get("car")
