@@ -126,6 +126,6 @@ class CarCustomSetupUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     def get_object(self):
         return get_object_or_404(
             CarCustomSetup,
-            car__unique_key=self.kwargs["car_unique_key"],
+            car=self.kwargs["car_unique_key"],
             car__user=self.request,
         )
