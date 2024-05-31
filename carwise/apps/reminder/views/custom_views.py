@@ -119,9 +119,18 @@ class CarCustomSetupUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
-        car_object = self.get_object()
-        CarCustomSetup.objects.create(car=car_object)
-        return super().delete(request, *args, **kwargs)
+        car_object = get_object_or_404(Car, unique_key=self.kwargs["car_unique_key"], user=self.request.user)
+        
+        # Delete the existing CarCustomSetup object if it exists
+        try:
+            existing_setup = CarCustomSetup.objects.get(car=car_object)
+            existing_setup.delete()
+            CarCustomSetup.objects.create(car=car_object)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except CarCustomSetup.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
 
     def get_object(self):
         return get_object_or_404(
