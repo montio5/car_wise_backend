@@ -5,14 +5,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import (
     CreateAPIView,
+    RetrieveUpdateAPIView,
 )
-from apps.user.serializers import UserSerializer
+from apps.user.serializers import UserSerializer,RegisterUserSerializer
 
 
 class RegisterAPIView(CreateAPIView):
 
     permission_classes = []
-    serializer_class = UserSerializer
+    serializer_class = RegisterUserSerializer
 
 
 class SignInAPIView(APIView):
@@ -60,3 +61,12 @@ class LogOutAPIView(APIView):
                 {"error": "Refresh token not provided"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class RetrieveUpdateUserView(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+    

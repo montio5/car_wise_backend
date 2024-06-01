@@ -5,6 +5,24 @@ from apps.common.message import AppMessages
 
 
 class UserSerializer(serializers.ModelSerializer):
+    
+    def validate_email(self, value):
+            request = self.context.get('request')
+            if request.method == 'PUT':
+                instance = self.instance
+                user_with_entered_email = User.objects.filter(email__iexact=value).exclude(id=instance.id)
+            else:
+                user_with_entered_email = User.objects.filter(email__iexact=value)
+            
+            if user_with_entered_email:
+                raise serializers.ValidationError(
+                                    AppMessages.USER_EXISTS.value)
+            return value
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name']
+
+class RegisterUserSerializer(UserSerializer):
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
@@ -12,14 +30,8 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data["email"], **validated_data
         )
         return user
-    
-    def validate_email(self,value):
-        user_with_entered_email =User.objects.filter(email__iexact =value)
-        if user_with_entered_email:
-            raise serializers.ValidationError(
-                                AppMessages.USER_EXISTS.value)
-        return value
 
     class Meta:
         model = User
-        fields = ("email", "password","first_name", "last_name")
+        fields = UserSerializer.Meta.fields + [ "password"]
+
