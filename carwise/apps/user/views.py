@@ -7,7 +7,7 @@ from rest_framework.generics import (
     CreateAPIView,
     RetrieveUpdateAPIView,
 )
-from apps.user.serializers import UserSerializer,RegisterUserSerializer
+from apps.user.serializers import UserSerializer,RegisterUserSerializer,ChangePasswordSerializer
 
 
 class RegisterAPIView(CreateAPIView):
@@ -66,7 +66,19 @@ class LogOutAPIView(APIView):
 class RetrieveUpdateUserView(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
+    http_method_names = ["put", "get"]
 
     def get_object(self):
         return self.request.user
     
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer =  ChangePasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            request.user.set_password(serializer.validated_data['new_password'])
+            request.user.save()
+            return Response({'detail': 'Password updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
