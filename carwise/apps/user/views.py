@@ -1,3 +1,4 @@
+from apps.user.models import BlacklistedToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -38,31 +39,6 @@ class SignInAPIView(APIView):
         )
 
 
-class LogOutAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        refresh_token = request.data.get("refresh_token")
-        if refresh_token:
-            try:
-                token = RefreshToken(refresh_token)
-                token.blacklist()
-                return Response(
-                    {"success": "User logged out successfully"},
-                    status=status.HTTP_200_OK,
-                )
-            except Exception as e:
-                return Response(
-                    {"error": "Invalid refresh token"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        else:
-            return Response(
-                {"error": "Refresh token not provided"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-
 class RetrieveUpdateUserView(RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
@@ -82,3 +58,21 @@ class ChangePasswordView(APIView):
             request.user.save()
             return Response({'detail': 'Password updated successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class LogoutAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            auth_header = request.headers.get('Authorization')
+            if not auth_header:
+                return Response({"detail": "Authorization header missing."}, status=status.HTTP_400_BAD_REQUEST)
+
+            token = auth_header.split(' ')[1]
+            BlacklistedToken.objects.create(token=token)
+
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        

@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "apps.common.exception_handler.custom_exception_handler",
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "carwise.authentication.CustomJWTAuthentication",
     ],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
@@ -68,11 +68,11 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
     "ALGORITHM": "HS256",
-    "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    'BLACKLIST_AFTER_ROTATION': True,
-
+    "BLACKLIST_AFTER_ROTATION": True,
 }
+
+
 # SWAGGER_SETTINGS = {
 #     "SECURITY_DEFINITIONS": {
 #         "Bearer": {
