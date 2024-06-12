@@ -1,3 +1,11 @@
+--create backup
+python manage.py dumpdata > backup.json
+
+--restore db
+python manage.py loaddata backup.json
+
+
+
 --script
  python manage.py runscript -v2 car-company
 

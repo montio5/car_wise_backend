@@ -78,12 +78,8 @@ class CarِDashboardAPI(APIView):
                 resp_dict = {"amount": amount, "limit": limit, "pct":"overdue" if pct >100 else round(pct, 2)}
             if field.last_date_changed:
                 # Check if month_per_changes is not None
-                if field.month_per_changes is not None:
-                    expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
-                else:
-                    # Handle the case where month_per_changes is None
-                    expected_date = field.last_date_changed  # Or set some default value if appropriate
-                
+                expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
+ 
                 current_date = datetime.now()
                 
                 # Calculate the difference
@@ -92,12 +88,12 @@ class CarِDashboardAPI(APIView):
                 date = field.last_date_changed
                 date_limit = "overdue" if date_difference < timedelta(0) else date_difference
                 
-                resp_dict = {}  # Assuming resp_dict is defined
                 resp_dict["date"] = date
                 resp_dict["date_limit"] = date_limit
-            if len(resp_dict):
+            if len(resp_dict)>0:
                 resp_dict["name"]=field.name 
                 response_list.append(resp_dict)
+        return response_list
 
     def get(self, request, *args, **kwargs):
         car = self.get_object()
