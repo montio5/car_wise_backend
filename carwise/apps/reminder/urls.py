@@ -12,13 +12,14 @@ from apps.reminder.views.custom_views import (
     CustomFieldListAPI,
     CustomFieldUpdateDestroyAPI,
 )
-from apps.reminder.views.general_views import CarListAPI, DataChecker
+from apps.reminder.views.general_views import CarListAPI, DataChecker,CarِDashboardAPI
 
 
-# _________________________ car ________________________ #
+# _________________________ general ________________________ #
 
 general_apis = [
     path("car-models", CarListAPI.as_view(), name="car_models"),
+    path("car-dashboard/<str:unique_key>/", CarِDashboardAPI.as_view(), name="car_dashboard"),
 ]
 # _________________________ car ________________________ #
 

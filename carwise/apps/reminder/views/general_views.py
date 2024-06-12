@@ -1,10 +1,10 @@
 # Standard Library
 from apps.common.message import AppMessages
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.utils import timezone
 
 # First Party Imports
-from apps.reminder.models import CarCompany, Mileage
+from apps.reminder.models import Car, CarCompany, Mileage
 from rest_framework.views import APIView
 from apps.reminder.serializers.general_serializers import CarCompanyListSerializer
 
@@ -13,12 +13,113 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
-from rest_framework.generics import ListAPIView
+
+# Third Party Packages
+from rest_framework.generics import (
+    ListAPIView,
+    get_object_or_404,
+)
 
 SERIOUS = "Serious"
 MEDIUM = "Medium"
 INFO = "Informational"
 CUSTOM = "Custom"
+
+
+# ______________________ Get Car Dashboard API ______________________ #
+
+
+@extend_schema(tags=["general"])
+class CarِDashboardAPI(APIView):
+    """Get car dashboard detail"""
+
+    permission_classes = [IsAuthenticated]
+
+    def get_original_fields(self, car_setup, mileage):
+        exclude_fields = [
+            "_state",
+            "id",
+            "car_id",
+            "mileage",
+            "created_date",
+            "unique_key",
+        ]
+        filled_fields = [
+            key
+            for key in mileage.__dict__.keys()
+            if mileage.__dict__[key] is not None and key not in exclude_fields
+        ]
+        response_list = []
+        for field in filled_fields:
+            if hasattr(mileage, field):
+                amount = getattr(mileage, field)
+                limit = getattr(car_setup, field)
+                pct = 100 * amount / limit
+                item_dict = {
+                    "name":field ,
+                    "amount": amount,
+                    "limit": limit,
+                    "pct": "overdue" if pct >100 else round(pct, 2),
+                }
+                response_list.append(item_dict)
+        return response_list
+
+    def get_custom_fields(self, car, mileage):
+        # breakpoint()
+        fields = car.car_custom_fileds.all()
+        response_list = []
+
+        for field in fields:
+            resp_dict = {}
+            if field.last_mileage_changed:
+                amount = field.last_mileage_changed
+                limit = field.mileage_per_change + field.last_mileage_changed
+                pct = 100 * mileage.mileage/limit
+                resp_dict = {"amount": amount, "limit": limit, "pct":"overdue" if pct >100 else round(pct, 2)}
+            if field.last_date_changed:
+                # Check if month_per_changes is not None
+                if field.month_per_changes is not None:
+                    expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
+                else:
+                    # Handle the case where month_per_changes is None
+                    expected_date = field.last_date_changed  # Or set some default value if appropriate
+                
+                current_date = datetime.now()
+                
+                # Calculate the difference
+                date_difference = expected_date - current_date.date()
+                
+                date = field.last_date_changed
+                date_limit = "overdue" if date_difference < timedelta(0) else date_difference
+                
+                resp_dict = {}  # Assuming resp_dict is defined
+                resp_dict["date"] = date
+                resp_dict["date_limit"] = date_limit
+            if len(resp_dict):
+                resp_dict["name"]=field.name 
+                response_list.append(resp_dict)
+
+    def get(self, request, *args, **kwargs):
+        car = self.get_object()
+        car_setup = car.setup
+        mileages = Mileage.objects.filter(car=car).order_by("-created_date")
+        if mileages:
+            last_mileage = mileages.first()
+            orginal_resp_list =self.get_original_fields(car_setup, last_mileage)
+            custom_resp_list= self.get_custom_fields(car, last_mileage)
+            if orginal_resp_list is None:
+                orginal_resp_list=[]
+            if custom_resp_list is None:
+                custom_resp_list=[]
+
+        # for field in
+        return Response(orginal_resp_list+custom_resp_list, status.HTTP_200_OK)
+
+    def get_object(self):
+        return get_object_or_404(
+            Car, unique_key=self.kwargs["unique_key"], user=self.request.user
+        )
+
 
 # ______________________ car company List API ______________________ #
 
@@ -53,11 +154,14 @@ class DataChecker(APIView):
                     self.custom_field_check(car, last_mileage)
                     self.original_fields_check(car, last_mileage)
             return Response(self.message_dict, status.HTTP_200_OK)
-    
+
     def custom_field_check(self, car, mileage):
         custom_fields = car.car_custom_fileds.all()
         for field in custom_fields:
-            if field.mileage_per_change is not None or field.month_per_changes is not None:
+            if (
+                field.mileage_per_change is not None
+                or field.month_per_changes is not None
+            ):
                 car_key = car.unique_key
                 if car_key not in self.message_dict:
                     self.message_dict[car_key] = {field.id: {}}
@@ -72,8 +176,10 @@ class DataChecker(APIView):
 
     def check_mileage_condition(self, car, field, mileage):
         try:
-            if mileage.mileage > (field.mileage_per_change + field.last_mileage_changed):
-                self.message_dict[car.unique_key][field.id]= {
+            if mileage.mileage > (
+                field.mileage_per_change + field.last_mileage_changed
+            ):
+                self.message_dict[car.unique_key][field.id] = {
                     "status": CUSTOM,
                     "field_name": field.name,
                     "message": AppMessages.CHECK_FIELD_MILEAGE.value.format(field.name),
@@ -84,9 +190,11 @@ class DataChecker(APIView):
 
     def check_date_condition(self, car, field):
         try:
-            expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
+            expected_date = field.last_date_changed + timedelta(
+                days=30 * field.month_per_changes
+            )
             if expected_date < timezone.now().date():
-                self.message_dict[car.unique_key][field.id]= {
+                self.message_dict[car.unique_key][field.id] = {
                     "status": CUSTOM,
                     "field_name": field.name,
                     "message": AppMessages.CHECKER_FIELD_DATE.value.format(field.name),
@@ -94,8 +202,6 @@ class DataChecker(APIView):
                 }
         except TypeError:
             pass
-
-
 
     def original_fields_check(self, car, mileage):
         field_details = {
