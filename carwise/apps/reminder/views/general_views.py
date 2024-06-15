@@ -99,6 +99,7 @@ class CarِDashboardAPI(APIView):
         car = self.get_object()
         car_setup = car.setup
         mileages = Mileage.objects.filter(car=car).order_by("-created_date")
+        response_dict ={}
         if mileages:
             last_mileage = mileages.first()
             orginal_resp_list =self.get_original_fields(car_setup, last_mileage)
@@ -107,9 +108,11 @@ class CarِDashboardAPI(APIView):
                 orginal_resp_list=[]
             if custom_resp_list is None:
                 custom_resp_list=[]
+            response_dict["mileage"] = last_mileage.mileage
 
         # for field in
-        return Response(orginal_resp_list+custom_resp_list, status.HTTP_200_OK)
+        response_dict['statistic'] =orginal_resp_list+custom_resp_list
+        return Response(response_dict, status.HTTP_200_OK)
 
     def get_object(self):
         return get_object_or_404(
