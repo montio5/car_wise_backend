@@ -52,13 +52,13 @@ class CarِDashboardAPI(APIView):
         response_list = []
         for field in filled_fields:
             if hasattr(mileage, field):
-                amount = getattr(mileage, field)
-                limit = getattr(car_setup, field)
-                pct = 100 * amount / limit
+                last_changed = getattr(mileage, field)
+                future_change = getattr(car_setup, field) + last_changed
+                pct = 100 * mileage.mileage/ future_change
                 item_dict = {
                     "name":field ,
-                    "amount": amount,
-                    "limit": limit,
+                    "amount": last_changed,
+                    "limit": future_change,
                     "pct": "overdue" if pct >100 else round(pct, 2),
                 }
                 response_list.append(item_dict)
