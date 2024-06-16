@@ -22,3 +22,10 @@ class AppMessages(enum.Enum):
         "It's been a considerable amount of time since your last {} change."
     )
     CHECK_PLEASE_MESSAGE = _("Please check {} . long time no check!")
+    DATE_PASSED = _("{} passed!")
+    DATE_FUTURE =_("next {}")
+    YEAR =_("{} year(s)")
+    MONTH =_("{} month(s)")
+    DAY =_("{} day(s)")
+
+

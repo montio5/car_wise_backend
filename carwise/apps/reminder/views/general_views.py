@@ -5,6 +5,7 @@ from django.utils import timezone
 
 # First Party Imports
 from apps.reminder.models import Car, CarCompany, Mileage
+from apps.common.functions import timedelta_to_years_months_days
 from rest_framework.views import APIView
 from apps.reminder.serializers.general_serializers import CarCompanyListSerializer
 
@@ -54,7 +55,12 @@ class CarِDashboardAPI(APIView):
             if hasattr(mileage, field):
                 last_changed = getattr(mileage, field)
                 future_change = getattr(car_setup, field) + last_changed
-                pct = 100 * mileage.mileage/ future_change
+                # Calculate total distance between changes
+                total_distance = getattr(car_setup, field)
+
+                # Calculate distance traveled since the last change
+                distance_traveled = mileage.mileage - last_changed
+                pct = 100 * distance_traveled/ total_distance
                 item_dict = {
                     "name":field ,
                     "amount": last_changed,
@@ -77,19 +83,39 @@ class CarِDashboardAPI(APIView):
                 pct = 100 * mileage.mileage/limit
                 resp_dict = {"amount": amount, "limit": limit, "pct":"overdue" if pct >100 else round(pct, 2)}
             if field.last_date_changed:
-                # Check if month_per_changes is not None
-                expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
- 
-                current_date = datetime.now()
+                    # Check if month_per_changes is not None
+                    expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
+                    current_date = datetime.now()
+                    # Calculate the difference
+                    date_difference = expected_date - current_date.date()
+                    # Calculate the total time period in days
+                    total_period_days = (expected_date - field.last_date_changed).days
+
+                    # Calculate the elapsed time in days
+                    elapsed_days = (current_date.date() - field.last_date_changed).days
+
+                    # Calculate the percentage of time elapsed
+                    percentage_elapsed = (elapsed_days / total_period_days) * 100
+                    resp_dict["date_pct"] = "overdue" if percentage_elapsed > 100 else percentage_elapsed
+                    date_limit = "overdue" if date_difference < timedelta(0) else date_difference  
+                    #
+                    years, months, days =timedelta_to_years_months_days(abs(date_difference))
+                    message =""
+                    if years!=0:
+                       message += AppMessages.YEAR.value.format(years)
+                    if months!=0:
+                        message += AppMessages.MONTH.value.format(months)
+                    if days!=0:
+                       message += AppMessages.DAY.value.format(days)
+                    if date_difference< timedelta(0):
+                        date_limit = AppMessages.DATE_PASSED.value.format(message)
+                    else:
+                        date_limit = AppMessages.DATE_FUTURE.value.format(message)
+
                 
-                # Calculate the difference
-                date_difference = expected_date - current_date.date()
-                
-                date = field.last_date_changed
-                date_limit = "overdue" if date_difference < timedelta(0) else date_difference
-                
-                resp_dict["date"] = date
-                resp_dict["date_limit"] = date_limit
+                    resp_dict["date"] = field.last_date_changed
+                    resp_dict["date_limit"] = date_limit
+
             if len(resp_dict)>0:
                 resp_dict["name"]=field.name 
                 response_list.append(resp_dict)
