@@ -78,25 +78,26 @@ class MileageSerializer(serializers.ModelSerializer):
         car = self.context.get("car", None)
         if car is None:
             return validated_data
-        # check the entered amount not less than previous
-        previous_mileages = Mileage.objects.filter(car=car.id).order_by("-created_date")
-        if previous_mileages:
-            previous_mileage = previous_mileages.first()
-            for field_name, field_value in validated_data.items():
-                # Check if the field is an integer and exists in the previous mileage object
-                if isinstance(field_value, int) and hasattr(
-                    previous_mileage, field_name
-                ):
-                    # Get the corresponding field value from the previous mileage object
-                    previous_field_value = getattr(previous_mileage, field_name)
-                    if isinstance(previous_field_value, int):
-                        # Compare the field values
-                        if field_value < previous_field_value:
-                            raise serializers.ValidationError(
-                                AppMessages.INVALID_UPDATE_MILEAGE.value.format(
-                                    field_name
+        if self.instance is None: # in create mode
+            # check the entered amount not less than previous
+            previous_mileages = Mileage.objects.filter(car=car.id).order_by("-created_date")
+            if previous_mileages:
+                previous_mileage = previous_mileages.first()
+                for field_name, field_value in validated_data.items():
+                    # Check if the field is an integer and exists in the previous mileage object
+                    if isinstance(field_value, int) and hasattr(
+                        previous_mileage, field_name
+                    ):
+                        # Get the corresponding field value from the previous mileage object
+                        previous_field_value = getattr(previous_mileage, field_name)
+                        if isinstance(previous_field_value, int):
+                            # Compare the field values
+                            if field_value < previous_field_value:
+                                raise serializers.ValidationError(
+                                    AppMessages.INVALID_UPDATE_MILEAGE.value.format(
+                                        field_name
+                                    )
                                 )
-                            )
 
         return validated_data
 
