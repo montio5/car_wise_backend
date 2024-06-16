@@ -96,7 +96,7 @@ class CarِDashboardAPI(APIView):
 
                     # Calculate the percentage of time elapsed
                     percentage_elapsed = (elapsed_days / total_period_days) * 100
-                    resp_dict["date_pct"] = "overdue" if percentage_elapsed > 100 else percentage_elapsed
+                    resp_dict["date_pct"] = "overdue" if percentage_elapsed > 100 else round(percentage_elapsed, 2) 
                     date_limit = "overdue" if date_difference < timedelta(0) else date_difference  
                     #
                     years, months, days =timedelta_to_years_months_days(abs(date_difference))
