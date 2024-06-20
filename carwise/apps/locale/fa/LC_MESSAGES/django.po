@@ -1,0 +1,156 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-19 21:18+0330\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\apps\common\exception.py:19
+msgid "Token is invalid or expired"
+msgstr "! لطفا احراز هویت کنید  "
+
+#: .\apps\common\exception.py:26
+msgid "This item cannot be deleted because it is being used by other rows."
+msgstr ""
+
+#: .\apps\common\exception.py:32
+msgid "Duplicate key value violates unique constraint."
+msgstr ""
+
+#: .\apps\common\exception_handler.py:37
+msgid "Protected error"
+msgstr ""
+
+#: .\apps\common\exception_handler.py:40
+msgid "Integrity error"
+msgstr ""
+
+#: .\apps\common\exception_handler.py:44
+msgid "Internal server error"
+msgstr ""
+
+#: .\apps\common\message.py:9
+msgid " you are not alowed to change this car mileage"
+msgstr "! شما مجاز به تغییر کیلومتر این ماشین نیستید  "
+
+#: .\apps\common\message.py:11
+msgid ""
+"Invalid custom field! one of the fields should be filled. fields are :{}"
+msgstr "! اطلاعات نا معتبر است. حداقل یکی از فیلد های {} باید پر شوند"
+
+#: .\apps\common\message.py:13
+msgid "{} should filed!"
+msgstr "! فیلد {} باید پر شود"
+
+#: .\apps\common\message.py:15
+msgid "The field {} is greater than mileage you entered!"
+msgstr "! مقداری که برای {} وارد کرده اید از کیلومتر فعلی ماشین بیشتر است"
+
+#: .\apps\common\message.py:17
+msgid "This email is taken!"
+msgstr "! ایمیل قبلا انتخاب شده است"
+
+#: .\apps\common\message.py:18
+msgid "{} cannot be lower than the previous mileage."
+msgstr ""
+"{} کیلومتر تعویض قطعات نمیتواند از دفعه قبلی  که وارد کرده اید کمتر باشد "
+
+#: .\apps\common\message.py:20
+msgid "Your {} is overdue for replacement based on mileage."
+msgstr "! مسافت قابل پیمایش برای  {} به انتها رسید است "
+
+#: .\apps\common\message.py:22
+msgid "It's been a considerable amount of time since your last {} change."
+msgstr " زمان زیادی میگذرد که {} را تعویض نکرده اید"
+
+#: .\apps\common\message.py:24
+msgid "Please check {} . long time no check!"
+msgstr "! لطفا {} را چک کنید. مدت زیادی از آخرین بازدیدتان میگذرد"
+
+#: .\apps\common\message.py:25
+msgid "{} passed!"
+msgstr "گذشته {}"
+
+#: .\apps\common\message.py:26
+msgid "next {}"
+msgstr "بعد {}"
+
+#: .\apps\common\message.py:27
+msgid "{} year(s)"
+msgstr "سال {}"
+
+#: .\apps\common\message.py:28
+msgid "{} month(s)"
+msgstr "ماه {} "
+
+#: .\apps\common\message.py:29
+msgid "{} day(s)"
+msgstr "روز {}"
+
+#: .\apps\reminder\models.py:67
+msgid "Engine Oil"
+msgstr "روغن موتور"
+
+#: .\apps\reminder\models.py:69
+msgid "Gearbox Oil"
+msgstr "روغن گیربکس"
+
+#: .\apps\reminder\models.py:72
+msgid "Hydraulic Fluid"
+msgstr "روغن هیدرولیک"
+
+#: .\apps\reminder\models.py:76
+msgid "Oil Filter"
+msgstr "فیلتر روغن"
+
+#: .\apps\reminder\models.py:78
+msgid "Fuel Filter"
+msgstr "فیلتر بنزین"
+
+#: .\apps\reminder\models.py:80
+msgid "Air Filter"
+msgstr "فیلتر هوا"
+
+#: .\apps\reminder\models.py:82
+msgid "Cabin Air Filter"
+msgstr "فیلتر کابین"
+
+#: .\apps\reminder\models.py:86
+msgid "Timing Belt"
+msgstr "تسمه تایم"
+
+#: .\apps\reminder\models.py:90
+msgid "Alternator Belt"
+msgstr "تسمه دینام"
+
+#: .\apps\reminder\models.py:94
+msgid "Front Brake Pads"
+msgstr "ترمز جلو "
+
+#: .\apps\reminder\models.py:97
+msgid "Rear Brake Pads"
+msgstr "ترمز عقب "
+
+#: .\apps\reminder\models.py:99
+msgid "Spark Plug"
+msgstr "شمع"
+
+#: .\apps\reminder\models.py:101
+msgid "Front Suspension"
+msgstr "جلوبندی"
+
+#: .\apps\reminder\models.py:104
+msgid "Clutch Plate"
+msgstr "صفحه کلاج"
