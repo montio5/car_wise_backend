@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-19 21:18+0330\n"
+"POT-Creation-Date: 2024-06-20 20:50+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 
 #: .\apps\common\exception.py:19
 msgid "Token is invalid or expired"
@@ -23,23 +25,23 @@ msgstr "! لطفا احراز هویت کنید  "
 
 #: .\apps\common\exception.py:26
 msgid "This item cannot be deleted because it is being used by other rows."
-msgstr ""
+msgstr "! این آیتم در جای دیگری استفاده شده و قابل حذف نیست "
 
 #: .\apps\common\exception.py:32
 msgid "Duplicate key value violates unique constraint."
-msgstr ""
+msgstr "! دارای فیلد تکراری"
 
 #: .\apps\common\exception_handler.py:37
 msgid "Protected error"
-msgstr ""
+msgstr "! ارور محافظت شده"
 
 #: .\apps\common\exception_handler.py:40
 msgid "Integrity error"
-msgstr ""
+msgstr "Integrity error"
 
 #: .\apps\common\exception_handler.py:44
 msgid "Internal server error"
-msgstr ""
+msgstr "مشکل سرور"
 
 #: .\apps\common\message.py:9
 msgid " you are not alowed to change this car mileage"
@@ -154,3 +156,4 @@ msgstr "جلوبندی"
 #: .\apps\reminder\models.py:104
 msgid "Clutch Plate"
 msgstr "صفحه کلاج"
+

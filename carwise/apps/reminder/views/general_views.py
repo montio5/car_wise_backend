@@ -62,7 +62,7 @@ class CarِDashboardAPI(APIView):
                 distance_traveled = mileage.mileage - last_changed
                 pct = 100 * distance_traveled/ total_distance
                 item_dict = {
-                    "name":field ,
+                    "name":Mileage._meta.get_field(field).verbose_name ,
                     "amount": last_changed,
                     "limit": future_change,
                     "pct": "overdue" if pct >100 else round(pct, 2),
