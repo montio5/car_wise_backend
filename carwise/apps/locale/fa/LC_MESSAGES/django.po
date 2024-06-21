@@ -83,11 +83,11 @@ msgstr "! لطفا {} را چک کنید. مدت زیادی از آخرین با
 
 #: .\apps\common\message.py:25
 msgid "{} passed!"
-msgstr "گذشته {}"
+msgstr "{} گذشته "
 
 #: .\apps\common\message.py:26
 msgid "next {}"
-msgstr "بعد {}"
+msgstr "{} بعد "
 
 #: .\apps\common\message.py:27
 msgid "{} year(s)"
