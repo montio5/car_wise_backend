@@ -169,9 +169,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 TIME_ZONE = "UTC"
 
-USE_I18N = True
-
-USE_L10N = True
 USE_TZ = True
 USE_THOUSAND_SEPARATOR = True
 
@@ -185,9 +182,21 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Enable translation
+USE_I18N = True
+USE_L10N = True
+
+# Specify the default language code
 LANGUAGE_CODE = "fa"
 
+# List of languages to support
 LANGUAGES = [
     ("en", "English"),
-    ("fa", "farsi"),
+    ("fa", "Farsi"),
+]
+
+# Path to the locale directory
+LOCALE_PATHS = [
+    BASE_DIR /"apps/locale",
 ]
