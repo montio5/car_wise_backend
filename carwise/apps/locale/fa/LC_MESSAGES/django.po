@@ -83,23 +83,23 @@ msgstr "! لطفا {} را چک کنید. مدت زیادی از آخرین با
 
 #: .\apps\common\message.py:25
 msgid "{} passed!"
-msgstr "{} گذشته "
+msgstr "مدت {} گذشته "
 
 #: .\apps\common\message.py:26
 msgid "next {}"
-msgstr "{} بعد "
+msgstr "حدوداً {} بعد"
 
 #: .\apps\common\message.py:27
 msgid "{} year(s)"
-msgstr "سال {}"
+msgstr "سال{}"
 
 #: .\apps\common\message.py:28
 msgid "{} month(s)"
-msgstr "ماه {} "
+msgstr "{} ماه "
 
 #: .\apps\common\message.py:29
 msgid "{} day(s)"
-msgstr "روز {}"
+msgstr "{} روز " 
 
 #: .\apps\reminder\models.py:67
 msgid "Engine Oil"
@@ -156,3 +156,15 @@ msgstr "جلوبندی"
 #: .\apps\reminder\models.py:104
 msgid "Clutch Plate"
 msgstr "صفحه کلاج"
+
+#: .\apps\reminder\models.py:104
+msgid "overdue"
+msgstr "معوقه"
+
+#: .\apps\reminder\models.py:104
+msgid "and"
+msgstr "و"
+
+#: .\apps\reminder\models.py:104
+msgid ","
+msgstr "،"

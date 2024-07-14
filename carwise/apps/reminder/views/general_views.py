@@ -65,7 +65,7 @@ class CarِDashboardAPI(APIView):
                     "name":Mileage._meta.get_field(field).verbose_name ,
                     "amount": last_changed,
                     "limit": future_change,
-                    "pct": "overdue" if pct >100 else round(pct, 2),
+                    "pct": AppMessages.OVERDUE.value if pct >100 else round(pct, 2),
                 }
                 response_list.append(item_dict)
         return response_list
@@ -81,7 +81,7 @@ class CarِDashboardAPI(APIView):
                 amount = field.last_mileage_changed
                 limit = field.mileage_per_change + field.last_mileage_changed
                 pct = 100 * mileage.mileage/limit
-                resp_dict = {"amount": amount, "limit": limit, "pct":"overdue" if pct >100 else round(pct, 2)}
+                resp_dict = {"amount": amount, "limit": limit, "pct":AppMessages.OVERDUE.value if pct >100 else round(pct, 2)}
             if field.last_date_changed:
                     # Check if month_per_changes is not None
                     expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
@@ -96,30 +96,35 @@ class CarِDashboardAPI(APIView):
 
                     # Calculate the percentage of time elapsed
                     percentage_elapsed = (elapsed_days / total_period_days) * 100
-                    resp_dict["date_pct"] = "overdue" if percentage_elapsed > 100 else round(percentage_elapsed, 2) 
-                    date_limit = "overdue" if date_difference < timedelta(0) else date_difference  
+                    resp_dict["date_pct"] = AppMessages.OVERDUE.value if percentage_elapsed > 100 else round(percentage_elapsed, 2) 
+                    date_limit = AppMessages.OVERDUE.value if date_difference < timedelta(0) else date_difference  
                     #
-                    years, months, days =timedelta_to_years_months_days(abs(date_difference))
-                    message =""
-                    if years!=0:
-                       message += AppMessages.YEAR.value.format(years)
-                    if months!=0:
-                        message += AppMessages.MONTH.value.format(months)
-                    if days!=0:
-                       message += AppMessages.DAY.value.format(days)
-                    if date_difference< timedelta(0):
+                    years, months, days = timedelta_to_years_months_days(abs(date_difference))
+                    parts = []
+                    if years != 0:
+                        parts.append(AppMessages.YEAR.value.format(years))
+                    if months != 0:
+                        parts.append(AppMessages.MONTH.value.format(months))
+                    if days != 0:
+                        parts.append(AppMessages.DAY.value.format(days))
+
+                    if len(parts) > 1:
+                        message = f" {AppMessages.AND.value} ".join(f"{AppMessages.COMMA.value} ".join(parts).rsplit(f"{AppMessages.COMMA.value} ", 1))
+                    else:
+                        message = parts[0]
+
+                    if date_difference < timedelta(0):
                         date_limit = AppMessages.DATE_PASSED.value.format(message)
                     else:
                         date_limit = AppMessages.DATE_FUTURE.value.format(message)
 
-                
                     resp_dict["date"] = field.last_date_changed
                     resp_dict["date_limit"] = date_limit
 
-            if len(resp_dict)>0:
-                resp_dict["name"]=field.name 
-                response_list.append(resp_dict)
-        return response_list
+                    if len(resp_dict) > 0:
+                        resp_dict["name"] = field.name
+                        response_list.append(resp_dict)
+            return response_list
 
     def get(self, request, *args, **kwargs):
         car = self.get_object()
