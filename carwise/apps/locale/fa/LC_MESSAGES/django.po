@@ -91,7 +91,7 @@ msgstr "حدوداً {} بعد"
 
 #: .\apps\common\message.py:27
 msgid "{} year(s)"
-msgstr "سال{}"
+msgstr "{} سال"
 
 #: .\apps\common\message.py:28
 msgid "{} month(s)"
@@ -158,7 +158,7 @@ msgid "Clutch Plate"
 msgstr "صفحه کلاج"
 
 #: .\apps\reminder\models.py:104
-msgid "overdue"
+msgid "Overdue"
 msgstr "معوقه"
 
 #: .\apps\reminder\models.py:104
