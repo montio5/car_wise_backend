@@ -158,8 +158,8 @@ msgid "Clutch Plate"
 msgstr "صفحه کلاج"
 
 #: .\apps\reminder\models.py:104
-msgid "Overdue"
-msgstr "معوقه"
+#msgid "Overdue"
+#msgstr "معوقه"
 
 #: .\apps\reminder\models.py:104
 msgid "and"
