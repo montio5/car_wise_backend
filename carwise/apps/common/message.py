@@ -27,7 +27,7 @@ class AppMessages(enum.Enum):
     YEAR =_("{} year(s)")
     MONTH =_("{} month(s)")
     DAY =_("{} day(s)")
-    OVERDUE =_("Overdue")
+    OVERDUE =_("overdue")
     AND =_("and")
     COMMA =_(",") 
 
