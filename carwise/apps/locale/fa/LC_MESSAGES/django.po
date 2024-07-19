@@ -71,7 +71,7 @@ msgstr ""
 
 #: .\apps\common\message.py:20
 msgid "Your {} is overdue for replacement based on mileage."
-msgstr "! مسافت قابل پیمایش برای  {} به انتها رسید است "
+msgstr " مسافت قابل پیمایش برای  {} به انتها رسید است "
 
 #: .\apps\common\message.py:22
 msgid "It's been a considerable amount of time since your last {} change."

@@ -71,17 +71,17 @@ class CarِDashboardAPI(APIView):
         return response_list
 
     def get_custom_fields(self, car, mileage):
-        # breakpoint()
         fields = car.car_custom_fileds.all()
         response_list = []
-
         for field in fields:
             resp_dict = {}
             if field.last_mileage_changed:
+                
                 amount = field.last_mileage_changed
                 limit = field.mileage_per_change + field.last_mileage_changed
                 pct = 100 * mileage.mileage/limit
                 resp_dict = {"amount": amount, "limit": limit, "pct":AppMessages.OVERDUE.value if pct >100 else round(pct, 2)}
+                
             if field.last_date_changed:
                     # Check if month_per_changes is not None
                     expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
@@ -120,11 +120,11 @@ class CarِDashboardAPI(APIView):
 
                     resp_dict["date"] = field.last_date_changed
                     resp_dict["date_limit"] = date_limit
-
-                    if len(resp_dict) > 0:
-                        resp_dict["name"] = field.name
-                        response_list.append(resp_dict)
-            return response_list
+                    
+            if resp_dict: # if the dict was not empty
+                resp_dict["name"] = field.name
+                response_list.append(resp_dict)
+        return response_list
 
     def get(self, request, *args, **kwargs):
         car = self.get_object()
@@ -203,6 +203,8 @@ class DataChecker(APIView):
 
                 # Check date condition
                 self.check_date_condition(car, field)
+                if not self.message_dict[car_key][field.id]:
+                    del self.message_dict[car_key][field.id]
 
     def check_mileage_condition(self, car, field, mileage):
         try:

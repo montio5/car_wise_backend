@@ -5,6 +5,9 @@ python manage.py dumpdata > backup.json
 python manage.py loaddata backup.json
 
 
+--tranlation
+python manage.py makemessages -l 'de' -i venv
+django-admin compilemessages
 
 --script
  python manage.py runscript -v2 car-company
