@@ -11,6 +11,8 @@ class AppMessages(enum.Enum):
         "Invalid custom field! one of the fields should be filled. fields are :{}"
     )
     MUST_FIELD = _("{} should filed!")
+    BOTH_MUST_FIELD = _("Both {} and {} should filed!")
+
     CAN_NOT_GREATER_THAN_MILEAGE = _(
         "The field {} is greater than mileage you entered!"
     )
@@ -23,13 +25,10 @@ class AppMessages(enum.Enum):
     )
     CHECK_PLEASE_MESSAGE = _("Please check {} . long time no check!")
     DATE_PASSED = _("{} passed!")
-    DATE_FUTURE =_("next {}")
-    YEAR =_("{} year(s)")
-    MONTH =_("{} month(s)")
-    DAY =_("{} day(s)")
-    OVERDUE =_("overdue")
-    AND =_("and")
-    COMMA =_(",") 
-
-
-
+    DATE_FUTURE = _("next {}")
+    YEAR = _("{} year(s)")
+    MONTH = _("{} month(s)")
+    DAY = _("{} day(s)")
+    OVERDUE = _("overdue")
+    AND = _("and")
+    COMMA = _(",")

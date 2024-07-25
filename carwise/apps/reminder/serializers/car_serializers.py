@@ -56,7 +56,9 @@ class MileageSerializer(serializers.ModelSerializer):
 
     unique_key = serializers.CharField(read_only=True)
     created_date = serializers.DateTimeField(format="%d.%m.%Y", read_only=True)
-    custom_fields = CustomFieldListSerializer(many=True, required=False, source ="car.car_custom_fileds")
+    custom_fields = CustomFieldListSerializer(
+        many=True, required=False, source="car.car_custom_fileds"
+    )
 
     class Meta:
         model = Mileage
@@ -72,15 +74,17 @@ class MileageSerializer(serializers.ModelSerializer):
                 ):
                     raise ValidationError(
                         AppMessages.CAN_NOT_GREATER_THAN_MILEAGE.value.format(
-                            field_name
+                            Mileage._meta.get_field(field_name).verbose_name
                         )
                     )
         car = self.context.get("car", None)
         if car is None:
             return validated_data
-        if self.instance is None: # in create mode
+        if self.instance is None:  # in create mode
             # check the entered amount not less than previous
-            previous_mileages = Mileage.objects.filter(car=car.id).order_by("-created_date")
+            previous_mileages = Mileage.objects.filter(car=car.id).order_by(
+                "-created_date"
+            )
             if previous_mileages:
                 previous_mileage = previous_mileages.first()
                 for field_name, field_value in validated_data.items():
@@ -95,12 +99,11 @@ class MileageSerializer(serializers.ModelSerializer):
                             if field_value < previous_field_value:
                                 raise serializers.ValidationError(
                                     AppMessages.INVALID_UPDATE_MILEAGE.value.format(
-                                        field_name
+                                        Mileage._meta.get_field(field_name).verbose_name
                                     )
                                 )
 
         return validated_data
-
 
     def create(self, validated_data):
         car = validated_data.get("car")

@@ -6,7 +6,7 @@ python manage.py loaddata backup.json
 
 
 --tranlation
-python manage.py makemessages -l 'de' -i venv
+python manage.py makemessages -l 'fa' -i venv
 django-admin compilemessages
 
 --script

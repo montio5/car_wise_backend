@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-20 20:50+0330\n"
+"POT-Creation-Date: 2024-07-25 20:28+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
 
 #: .\apps\common\exception.py:19
 msgid "Token is invalid or expired"
@@ -56,50 +55,68 @@ msgstr "! اطلاعات نا معتبر است. حداقل یکی از فیلد
 msgid "{} should filed!"
 msgstr "! فیلد {} باید پر شود"
 
-#: .\apps\common\message.py:15
+#: .\apps\common\message.py:14
+msgid "Both {} and {} should filed!"
+msgstr "! فیلد {} و {} باید پر شوند"
+
+#: .\apps\common\message.py:17
 msgid "The field {} is greater than mileage you entered!"
 msgstr "! مقداری که برای {} وارد کرده اید از کیلومتر فعلی ماشین بیشتر است"
 
-#: .\apps\common\message.py:17
+#: .\apps\common\message.py:19
 msgid "This email is taken!"
 msgstr "! ایمیل قبلا انتخاب شده است"
 
-#: .\apps\common\message.py:18
+#: .\apps\common\message.py:20
 msgid "{} cannot be lower than the previous mileage."
 msgstr ""
 "{} کیلومتر تعویض قطعات نمیتواند از دفعه قبلی  که وارد کرده اید کمتر باشد "
 
-#: .\apps\common\message.py:20
+#: .\apps\common\message.py:22
 msgid "Your {} is overdue for replacement based on mileage."
 msgstr " مسافت قابل پیمایش برای  {} به انتها رسید است "
 
-#: .\apps\common\message.py:22
+#: .\apps\common\message.py:24
 msgid "It's been a considerable amount of time since your last {} change."
 msgstr " زمان زیادی میگذرد که {} را تعویض نکرده اید"
 
-#: .\apps\common\message.py:24
+#: .\apps\common\message.py:26
 msgid "Please check {} . long time no check!"
 msgstr "! لطفا {} را چک کنید. مدت زیادی از آخرین بازدیدتان میگذرد"
 
-#: .\apps\common\message.py:25
+#: .\apps\common\message.py:27
 msgid "{} passed!"
 msgstr "مدت {} گذشته "
 
-#: .\apps\common\message.py:26
+#: .\apps\common\message.py:28
 msgid "next {}"
 msgstr "حدوداً {} بعد"
 
-#: .\apps\common\message.py:27
+#: .\apps\common\message.py:29
 msgid "{} year(s)"
 msgstr "{} سال"
 
-#: .\apps\common\message.py:28
+#: .\apps\common\message.py:30
 msgid "{} month(s)"
 msgstr "{} ماه "
 
-#: .\apps\common\message.py:29
+#: .\apps\common\message.py:31
 msgid "{} day(s)"
-msgstr "{} روز " 
+msgstr "{} روز "
+
+#: .\apps\common\message.py:32
+msgid "overdue"
+msgstr ""
+
+# msgid "Overdue"
+# msgstr "معوقه"
+#: .\apps\common\message.py:33
+msgid "and"
+msgstr "و"
+
+#: .\apps\common\message.py:34
+msgid ","
+msgstr "،"
 
 #: .\apps\reminder\models.py:67
 msgid "Engine Oil"
@@ -157,14 +174,22 @@ msgstr "جلوبندی"
 msgid "Clutch Plate"
 msgstr "صفحه کلاج"
 
-#: .\apps\reminder\models.py:104
-#msgid "Overdue"
-#msgstr "معوقه"
+#: .\apps\reminder\models.py:148
+msgid "Name"
+msgstr "نام"
 
-#: .\apps\reminder\models.py:104
-msgid "and"
-msgstr "و"
+#: .\apps\reminder\models.py:149
+msgid "Mileage per change"
+msgstr "مقدار مسافت بین هر تعویض"
 
-#: .\apps\reminder\models.py:104
-msgid ","
-msgstr "،"
+#: .\apps\reminder\models.py:150
+msgid "Interval Between Changes"
+msgstr "مدت زمان بین هر تعویض"
+
+#: .\apps\reminder\models.py:152
+msgid "Last mileage changed"
+msgstr "آخرین مسافت تعویض"
+
+#: .\apps\reminder\models.py:153
+msgid "Last Changed date"
+msgstr "آخرین تاریخ تعویض"

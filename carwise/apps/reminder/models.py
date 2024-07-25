@@ -145,12 +145,12 @@ class CustomFiled(models.Model):
     car = models.ForeignKey(
         "Car", on_delete=models.CASCADE, related_name="car_custom_fileds"
     )
-    name = models.CharField(max_length=256)
-    mileage_per_change = models.PositiveBigIntegerField(null=True)
-    month_per_changes = models.PositiveBigIntegerField(null=True)
+    name = models.CharField(max_length=256,verbose_name=_("Name"))
+    mileage_per_change = models.PositiveBigIntegerField(null=True,verbose_name=_("Mileage per change"))
+    month_per_changes = models.PositiveBigIntegerField(null=True,verbose_name=_("Interval Between Changes"))
     #
-    last_mileage_changed = models.PositiveBigIntegerField(null=True)
-    last_date_changed = models.DateField(null=True)
+    last_mileage_changed = models.PositiveBigIntegerField(null=True,verbose_name=_("Last mileage changed"))
+    last_date_changed = models.DateField(null=True,verbose_name=_("Last Changed date"))
 
     def __str__(self):
         return str(self.id) + "-" + self.name

@@ -31,7 +31,7 @@ class CustomFieldSerializer(serializers.ModelSerializer):
             if value > last_mileage:
                 raise ValidationError(
                     AppMessages.CAN_NOT_GREATER_THAN_MILEAGE.value.format(
-                        "last_mileage_changed"
+                        CustomFiled._meta.get_field("last_mileage_changed").verbose_name
                     )
                 )
         return value
@@ -42,23 +42,32 @@ class CustomFieldSerializer(serializers.ModelSerializer):
         if mileage_per_change is None and month_per_changes is None:
             raise ValidationError(
                 AppMessages.INVALID_CUSTOM_FIELD.value.format(
-                    "mileage_per_change, month_per_changes"
+                    CustomFiled._meta.get_field("mileage_per_change").verbose_name,
+                    CustomFiled._meta.get_field("month_per_changes").verbose_name,
                 )
             )
 
         #
         last_mileage_changed = validated_data.get("last_mileage_changed", None)
         last_date_changed = validated_data.get("last_date_changed", None)
-        if mileage_per_change is not None:
-            if last_mileage_changed is None:
-                raise ValidationError(
-                    AppMessages.MUST_FIELD.value.format("last_mileage_changed")
+        if (mileage_per_change is not None and last_mileage_changed is None) or (
+            mileage_per_change is None and last_mileage_changed is not None
+        ):
+            raise ValidationError(
+                AppMessages.BOTH_MUST_FIELD.value.format(
+                    CustomFiled._meta.get_field("last_mileage_changed").verbose_name,
+                    CustomFiled._meta.get_field("mileage_per_change").verbose_name,
                 )
-        if month_per_changes is not None:
-            if last_date_changed is None:
-                raise ValidationError(
-                    AppMessages.MUST_FIELD.value.format("last_date_changed")
+            )
+        if (month_per_changes is not None and last_date_changed is None) or (
+            month_per_changes is None and last_date_changed is not None
+        ):
+            raise ValidationError(
+                AppMessages.BOTH_MUST_FIELD.value.format(
+                    CustomFiled._meta.get_field("last_date_changed").verbose_name,
+                    CustomFiled._meta.get_field("month_per_changes").verbose_name,
                 )
+            )
         return validated_data
 
     def update(self, instance, validated_data):
