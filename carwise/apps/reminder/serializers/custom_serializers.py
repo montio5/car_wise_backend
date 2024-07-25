@@ -49,7 +49,7 @@ class CustomFieldSerializer(serializers.ModelSerializer):
             and (mileage_per_change is None)
             and (mileage_per_change is None)
         ):
-            raise ValidationError(AppMessages.BOTH_MUST_FIELD.value)
+            raise ValidationError(AppMessages.AT_LAST_ONE_FIELD_SHOULD_FILLED.value)
 
         if (mileage_per_change is not None and last_mileage_changed is None) or (
             mileage_per_change is None and last_mileage_changed is not None
