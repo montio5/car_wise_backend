@@ -12,6 +12,7 @@ class AppMessages(enum.Enum):
     )
     MUST_FIELD = _("{} should filed!")
     BOTH_MUST_FIELD = _("Both {} and {} should filed!")
+    AT_LAST_ONE_FIELD_SHOULD_FILLED = _("At last one section should be filled!")
 
     CAN_NOT_GREATER_THAN_MILEAGE = _(
         "The field {} is greater than mileage you entered!"

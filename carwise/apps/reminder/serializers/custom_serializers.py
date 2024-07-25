@@ -39,17 +39,18 @@ class CustomFieldSerializer(serializers.ModelSerializer):
     def validate(self, validated_data):
         mileage_per_change = validated_data.get("mileage_per_change", None)
         month_per_changes = validated_data.get("month_per_changes", None)
-        if mileage_per_change is None and month_per_changes is None:
-            raise ValidationError(
-                AppMessages.INVALID_CUSTOM_FIELD.value.format(
-                    CustomFiled._meta.get_field("mileage_per_change").verbose_name,
-                    CustomFiled._meta.get_field("month_per_changes").verbose_name,
-                )
-            )
-
         #
         last_mileage_changed = validated_data.get("last_mileage_changed", None)
         last_date_changed = validated_data.get("last_date_changed", None)
+
+        if (
+            (mileage_per_change is None)
+            and (mileage_per_change is None)
+            and (mileage_per_change is None)
+            and (mileage_per_change is None)
+        ):
+            raise ValidationError(AppMessages.BOTH_MUST_FIELD.value)
+
         if (mileage_per_change is not None and last_mileage_changed is None) or (
             mileage_per_change is None and last_mileage_changed is not None
         ):

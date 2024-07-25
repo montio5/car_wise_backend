@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-25 20:28+0330\n"
+"POT-Creation-Date: 2024-07-25 21:46+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,64 +57,68 @@ msgstr "! فیلد {} باید پر شود"
 
 #: .\apps\common\message.py:14
 msgid "Both {} and {} should filed!"
-msgstr "! فیلد {} و {} باید پر شوند"
+msgstr "! فیلد های '{}' و '{}' هر دو باید پر شوند"
 
-#: .\apps\common\message.py:17
+#: .\apps\common\message.py:15
+msgid "At last one section should be filled!"
+msgstr "حداقل فیلد های یک قسمت باید پر شوند"
+
+#: .\apps\common\message.py:18
 msgid "The field {} is greater than mileage you entered!"
 msgstr "! مقداری که برای {} وارد کرده اید از کیلومتر فعلی ماشین بیشتر است"
 
-#: .\apps\common\message.py:19
+#: .\apps\common\message.py:20
 msgid "This email is taken!"
 msgstr "! ایمیل قبلا انتخاب شده است"
 
-#: .\apps\common\message.py:20
+#: .\apps\common\message.py:21
 msgid "{} cannot be lower than the previous mileage."
 msgstr ""
 "{} کیلومتر تعویض قطعات نمیتواند از دفعه قبلی  که وارد کرده اید کمتر باشد "
 
-#: .\apps\common\message.py:22
+#: .\apps\common\message.py:23
 msgid "Your {} is overdue for replacement based on mileage."
 msgstr " مسافت قابل پیمایش برای  {} به انتها رسید است "
 
-#: .\apps\common\message.py:24
+#: .\apps\common\message.py:25
 msgid "It's been a considerable amount of time since your last {} change."
 msgstr " زمان زیادی میگذرد که {} را تعویض نکرده اید"
 
-#: .\apps\common\message.py:26
+#: .\apps\common\message.py:27
 msgid "Please check {} . long time no check!"
 msgstr "! لطفا {} را چک کنید. مدت زیادی از آخرین بازدیدتان میگذرد"
 
-#: .\apps\common\message.py:27
+#: .\apps\common\message.py:28
 msgid "{} passed!"
 msgstr "مدت {} گذشته "
 
-#: .\apps\common\message.py:28
+#: .\apps\common\message.py:29
 msgid "next {}"
 msgstr "حدوداً {} بعد"
 
-#: .\apps\common\message.py:29
+#: .\apps\common\message.py:30
 msgid "{} year(s)"
 msgstr "{} سال"
 
-#: .\apps\common\message.py:30
+#: .\apps\common\message.py:31
 msgid "{} month(s)"
 msgstr "{} ماه "
 
-#: .\apps\common\message.py:31
+#: .\apps\common\message.py:32
 msgid "{} day(s)"
 msgstr "{} روز "
 
-#: .\apps\common\message.py:32
+#: .\apps\common\message.py:33
 msgid "overdue"
 msgstr ""
 
 # msgid "Overdue"
 # msgstr "معوقه"
-#: .\apps\common\message.py:33
+#: .\apps\common\message.py:34
 msgid "and"
 msgstr "و"
 
-#: .\apps\common\message.py:34
+#: .\apps\common\message.py:35
 msgid ","
 msgstr "،"
 
