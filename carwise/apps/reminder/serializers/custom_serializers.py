@@ -44,10 +44,10 @@ class CustomFieldSerializer(serializers.ModelSerializer):
         last_date_changed = validated_data.get("last_date_changed", None)
 
         if (
-            (mileage_per_change is None)
-            and (mileage_per_change is None)
-            and (mileage_per_change is None)
-            and (mileage_per_change is None)
+            mileage_per_change is None
+            and mileage_per_change is None
+            and mileage_per_change is None
+            and mileage_per_change is None
         ):
             raise ValidationError(AppMessages.AT_LAST_ONE_FIELD_SHOULD_FILLED.value)
 
