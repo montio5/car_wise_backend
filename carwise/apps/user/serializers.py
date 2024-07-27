@@ -5,22 +5,25 @@ from apps.common.message import AppMessages
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
+
     def validate_email(self, value):
-            request = self.context.get('request')
-            if request.method == 'PUT':
-                instance = self.instance
-                user_with_entered_email = User.objects.filter(email__iexact=value).exclude(id=instance.id)
-            else:
-                user_with_entered_email = User.objects.filter(email__iexact=value)
-            
-            if user_with_entered_email:
-                raise serializers.ValidationError(
-                                    AppMessages.USER_EXISTS.value)
-            return value
+        request = self.context.get("request")
+        if request.method == "PUT":
+            instance = self.instance
+            user_with_entered_email = User.objects.filter(email__iexact=value).exclude(
+                id=instance.id
+            )
+        else:
+            user_with_entered_email = User.objects.filter(email__iexact=value)
+
+        if user_with_entered_email:
+            raise serializers.ValidationError(AppMessages.USER_EXISTS.value)
+        return value
+
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name']
+        fields = ["email", "first_name", "last_name"]
+
 
 class RegisterUserSerializer(UserSerializer):
     password = serializers.CharField(write_only=True)
@@ -33,7 +36,7 @@ class RegisterUserSerializer(UserSerializer):
 
     class Meta:
         model = User
-        fields = UserSerializer.Meta.fields + [ "password"]
+        fields = UserSerializer.Meta.fields + ["password"]
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -42,13 +45,14 @@ class ChangePasswordSerializer(serializers.Serializer):
     confirm_new_password = serializers.CharField(required=True)
 
     def validate(self, data):
-        if data['new_password'] != data['confirm_new_password']:
+        if data["new_password"] != data["confirm_new_password"]:
             raise serializers.ValidationError("New passwords do not match.")
         return data
 
     def validate_current_password(self, value):
-        user = self.context['request'].user
+        user = self.context["request"].user
         if not user.check_password(value):
-            raise serializers.ValidationError("Current password is incorrect.")
+            raise serializers.ValidationError(
+                AppMessages.CURRENT_PASSWORD_IS_INCORRECT.value
+            )
         return value
-

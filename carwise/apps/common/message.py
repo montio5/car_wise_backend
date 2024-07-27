@@ -33,3 +33,4 @@ class AppMessages(enum.Enum):
     OVERDUE = _("overdue")
     AND = _("and")
     COMMA = _(",")
+    CURRENT_PASSWORD_IS_INCORRECT = _("Current password is incorrect.")

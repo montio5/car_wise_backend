@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-25 21:46+0330\n"
+"POT-Creation-Date: 2024-07-27 11:28+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,7 @@ msgstr "! دارای فیلد تکراری"
 
 #: .\apps\common\exception_handler.py:37
 msgid "Protected error"
-msgstr "! ارور محافظت شده"
+msgstr "! خطا محافظت شده"
 
 #: .\apps\common\exception_handler.py:40
 msgid "Integrity error"
@@ -40,7 +40,7 @@ msgstr "Integrity error"
 
 #: .\apps\common\exception_handler.py:44
 msgid "Internal server error"
-msgstr "مشکل سرور"
+msgstr "خطای سرور"
 
 #: .\apps\common\message.py:9
 msgid " you are not alowed to change this car mileage"
@@ -121,6 +121,10 @@ msgstr "و"
 #: .\apps\common\message.py:35
 msgid ","
 msgstr "،"
+
+#: .\apps\common\message.py:36
+msgid "Current password is incorrect."
+msgstr "رمز فعلی را اشتباه وارد کرده اید"
 
 #: .\apps\reminder\models.py:67
 msgid "Engine Oil"
