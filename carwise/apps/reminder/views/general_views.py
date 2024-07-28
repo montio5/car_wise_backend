@@ -60,12 +60,12 @@ class CarِDashboardAPI(APIView):
 
                 # Calculate distance traveled since the last change
                 distance_traveled = mileage.mileage - last_changed
-                pct = 100 * distance_traveled/ total_distance
+                pct = 100 * distance_traveled / total_distance
                 item_dict = {
-                    "name":Mileage._meta.get_field(field).verbose_name ,
+                    "name": Mileage._meta.get_field(field).verbose_name,
                     "amount": last_changed,
                     "limit": future_change,
-                    "pct": AppMessages.OVERDUE.value if pct >100 else round(pct, 2),
+                    "pct": AppMessages.OVERDUE.value if pct > 100 else round(pct, 2),
                 }
                 response_list.append(item_dict)
         return response_list
@@ -76,52 +76,72 @@ class CarِDashboardAPI(APIView):
         for field in fields:
             resp_dict = {}
             if field.last_mileage_changed:
-                
+
                 amount = field.last_mileage_changed
                 limit = field.mileage_per_change + field.last_mileage_changed
-                pct = 100 * mileage.mileage/limit
-                resp_dict = {"amount": amount, "limit": limit, "pct":AppMessages.OVERDUE.value if pct >100 else round(pct, 2)}
-                
+                pct = 100 * mileage.mileage / limit
+                resp_dict = {
+                    "amount": amount,
+                    "limit": limit,
+                    "pct": AppMessages.OVERDUE.value if pct > 100 else round(pct, 2),
+                }
+
             if field.last_date_changed:
-                    # Check if month_per_changes is not None
-                    expected_date = field.last_date_changed + timedelta(days=30 * field.month_per_changes)
-                    current_date = datetime.now()
-                    # Calculate the difference
-                    date_difference = expected_date - current_date.date()
-                    # Calculate the total time period in days
-                    total_period_days = (expected_date - field.last_date_changed).days
+                # Check if month_per_changes is not None
+                expected_date = field.last_date_changed + timedelta(
+                    days=30 * field.month_per_changes
+                )
+                current_date = datetime.now()
+                # Calculate the difference
+                date_difference = expected_date - current_date.date()
+                # Calculate the total time period in days
+                total_period_days = (expected_date - field.last_date_changed).days
 
-                    # Calculate the elapsed time in days
-                    elapsed_days = (current_date.date() - field.last_date_changed).days
+                # Calculate the elapsed time in days
+                elapsed_days = (current_date.date() - field.last_date_changed).days
 
-                    # Calculate the percentage of time elapsed
-                    percentage_elapsed = (elapsed_days / total_period_days) * 100
-                    resp_dict["date_pct"] = AppMessages.OVERDUE.value if percentage_elapsed > 100 else round(percentage_elapsed, 2) 
-                    date_limit = AppMessages.OVERDUE.value if date_difference < timedelta(0) else date_difference  
-                    #
-                    years, months, days = timedelta_to_years_months_days(abs(date_difference))
-                    parts = []
-                    if years != 0:
-                        parts.append(AppMessages.YEAR.value.format(years))
-                    if months != 0:
-                        parts.append(AppMessages.MONTH.value.format(months))
-                    if days != 0:
-                        parts.append(AppMessages.DAY.value.format(days))
+                # Calculate the percentage of time elapsed
+                percentage_elapsed = (elapsed_days / total_period_days) * 100
+                resp_dict["date_pct"] = (
+                    AppMessages.OVERDUE.value
+                    if percentage_elapsed > 100
+                    else round(percentage_elapsed, 2)
+                )
+                date_limit = (
+                    AppMessages.OVERDUE.value
+                    if date_difference < timedelta(0)
+                    else date_difference
+                )
+                #
+                years, months, days = timedelta_to_years_months_days(
+                    abs(date_difference)
+                )
+                parts = []
+                if years != 0:
+                    parts.append(AppMessages.YEAR.value.format(years))
+                if months != 0:
+                    parts.append(AppMessages.MONTH.value.format(months))
+                if days != 0:
+                    parts.append(AppMessages.DAY.value.format(days))
 
-                    if len(parts) > 1:
-                        message = f" {AppMessages.AND.value} ".join(f"{AppMessages.COMMA.value} ".join(parts).rsplit(f"{AppMessages.COMMA.value} ", 1))
-                    else:
-                        message = parts[0]
+                if len(parts) > 1:
+                    message = f" {AppMessages.AND.value} ".join(
+                        f"{AppMessages.COMMA.value} ".join(parts).rsplit(
+                            f"{AppMessages.COMMA.value} ", 1
+                        )
+                    )
+                else:
+                    message = parts[0]
 
-                    if date_difference < timedelta(0):
-                        date_limit = AppMessages.DATE_PASSED.value.format(message)
-                    else:
-                        date_limit = AppMessages.DATE_FUTURE.value.format(message)
+                if date_difference < timedelta(0):
+                    date_limit = AppMessages.DATE_PASSED.value.format(message)
+                else:
+                    date_limit = AppMessages.DATE_FUTURE.value.format(message)
 
-                    resp_dict["date"] = field.last_date_changed
-                    resp_dict["date_limit"] = date_limit
-                    
-            if resp_dict: # if the dict was not empty
+                resp_dict["date"] = field.last_date_changed
+                resp_dict["date_limit"] = date_limit
+
+            if resp_dict:  # if the dict was not empty
                 resp_dict["name"] = field.name
                 response_list.append(resp_dict)
         return response_list
@@ -130,19 +150,19 @@ class CarِDashboardAPI(APIView):
         car = self.get_object()
         car_setup = car.setup
         mileages = Mileage.objects.filter(car=car).order_by("-created_date")
-        response_dict ={}
+        response_dict = {}
         if mileages:
             last_mileage = mileages.first()
-            orginal_resp_list =self.get_original_fields(car_setup, last_mileage)
-            custom_resp_list= self.get_custom_fields(car, last_mileage)
+            orginal_resp_list = self.get_original_fields(car_setup, last_mileage)
+            custom_resp_list = self.get_custom_fields(car, last_mileage)
             if orginal_resp_list is None:
-                orginal_resp_list=[]
+                orginal_resp_list = []
             if custom_resp_list is None:
-                custom_resp_list=[]
+                custom_resp_list = []
             response_dict["mileage"] = last_mileage.mileage
 
         # for field in
-        response_dict['statistic'] =orginal_resp_list+custom_resp_list
+        response_dict["statistic"] = orginal_resp_list + custom_resp_list
         return Response(response_dict, status.HTTP_200_OK)
 
     def get_object(self):
@@ -183,7 +203,8 @@ class DataChecker(APIView):
                     last_mileage = mileages.first()
                     self.custom_field_check(car, last_mileage)
                     self.original_fields_check(car, last_mileage)
-            return Response(self.message_dict, status.HTTP_200_OK)
+
+        return Response(self.message_dict, status.HTTP_200_OK)
 
     def custom_field_check(self, car, mileage):
         custom_fields = car.car_custom_fileds.all()

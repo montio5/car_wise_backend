@@ -27,6 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegisterUserSerializer(UserSerializer):
     password = serializers.CharField(write_only=True)
+    email = serializers.CharField(required=True)
 
     def create(self, validated_data):
         user = User.objects.create_user(
