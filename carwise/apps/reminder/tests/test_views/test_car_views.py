@@ -80,7 +80,6 @@ class CarAddAPITestCases(TestCase):
             data=json.dumps(self.data),
             content_type=CONTENT_TYPE,
         )
-        # breakpoint()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
             set(response.data.keys()),
