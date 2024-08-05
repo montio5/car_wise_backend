@@ -145,10 +145,14 @@ class CarِDashboardAPI(APIView):
                             f"{AppMessages.COMMA.value} ", 1
                         )
                     )
-                else:
+                elif len(parts)==1:
                     message = parts[0]
 
-                if date_difference < timedelta(0):
+                elif len(parts) ==0:
+                    # if exact date has come
+                    message = AppMessages.DAY.value.format("1")
+
+                if date_difference <= timedelta(0):
                     date_limit = AppMessages.DATE_PASSED.value.format(message)
                 else:
                     date_limit = AppMessages.DATE_FUTURE.value.format(message)
