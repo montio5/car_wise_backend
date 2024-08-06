@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from apps.common.message import AppMessages
+from django.utils import timezone
 
 from apps.reminder.models import Car, CarCustomSetup, CustomFiled
 
@@ -34,7 +35,42 @@ class CustomFieldSerializer(serializers.ModelSerializer):
                         CustomFiled._meta.get_field("last_mileage_changed").verbose_name
                     )
                 )
+            if value <= 0:
+                raise ValidationError(
+                    AppMessages.SHOULD_BE_POSETIVE_INTEGER.value.format(
+                        CustomFiled._meta.get_field("last_mileage_changed").verbose_name
+                    )
+                )
         return value
+    
+    def validate_mileage_per_change(self, value):
+        if value is not None:
+            if value <= 0:
+                raise ValidationError(
+                    AppMessages.SHOULD_BE_POSETIVE_INTEGER.value.format(
+                        CustomFiled._meta.get_field("mileage_per_change").verbose_name
+                    )
+                )
+            return value
+    
+    def validate_month_per_changes(self, value):
+        if value is not None:
+            if value <= 0:
+                raise ValidationError(
+                    AppMessages.SHOULD_BE_POSETIVE_INTEGER.value.format(
+                        CustomFiled._meta.get_field("month_per_changes").verbose_name
+                    )
+                )
+            return value
+
+    def validate_last_date_changed(self, value):
+        if value is not None:
+            if value > timezone.now().date():
+                raise ValidationError(
+                    AppMessages.LAST_CHABGED_DATE_CANT_BE_IN_FUTURE.value
+                )
+            return value
+
 
     def validate(self, validated_data):
         mileage_per_change = validated_data.get("mileage_per_change", None)
@@ -47,7 +83,8 @@ class CustomFieldSerializer(serializers.ModelSerializer):
             last_mileage_changed is None and mileage_per_change is None
         ):
             raise ValidationError(AppMessages.AT_LAST_ONE_FIELD_SHOULD_FILLED.value)
-
+        
+        # validation for section mileage
         if (mileage_per_change is not None and last_mileage_changed is None) or (
             mileage_per_change is None and last_mileage_changed is not None
         ):
@@ -57,6 +94,8 @@ class CustomFieldSerializer(serializers.ModelSerializer):
                     CustomFiled._meta.get_field("mileage_per_change").verbose_name,
                 )
             )
+        
+        # validation for section date
         if (month_per_changes is not None and last_date_changed is None) or (
             month_per_changes is None and last_date_changed is not None
         ):
@@ -66,6 +105,7 @@ class CustomFieldSerializer(serializers.ModelSerializer):
                     CustomFiled._meta.get_field("month_per_changes").verbose_name,
                 )
             )
+        
         return validated_data
 
     def update(self, instance, validated_data):
