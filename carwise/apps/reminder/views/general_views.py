@@ -93,8 +93,8 @@ class CarِDashboardAPI(APIView):
             if field.last_mileage_changed and field.mileage_per_change:
 
                 amount = field.last_mileage_changed
-                limit = field.mileage_per_change 
-                diff = mileage.mileage - amount
+                limit = field.mileage_per_change + field.last_mileage_changed
+                diff = mileage.mileage - field.last_mileage_changed
                 pct = 100 * diff / field.mileage_per_change 
                 resp_dict = {
                     "amount": amount,
