@@ -197,14 +197,21 @@ class CarِDashboardAPI(APIView):
 @extend_schema(tags=["checker"])
 class DataChecker(APIView):
     permission_classes = [IsAuthenticated]
-    message_dict = {}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.message_dict = {}
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.user_cars.all()
 
     def get(self, request):
-        user = request.user
-        user_cars = user.user_cars.all()
+        self.message_dict = {}
+        user_cars = self.get_queryset()
         if user_cars:
             for car in user_cars:
-                mileages = Mileage.objects.filter(car=car).order_by("-created_date")
+                mileages = Mileage.objects.filter(car=car.id).order_by("-created_date")
                 if mileages:
                     last_mileage = mileages.first()
                     self.custom_field_check(car, last_mileage.mileage)
@@ -317,9 +324,14 @@ class DataChecker(APIView):
 
 
 class GetNotificationAPI(DataChecker):
-    results = []
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.message_dict = {}
+        self.results = []
 
     def get(self, request):
+        self.message_dict = {}
         user = self.request.user
         user_cars = user.user_cars.all()
         if user_cars:
@@ -342,8 +354,8 @@ class GetNotificationAPI(DataChecker):
                 key_count = len(self.message_dict[item].keys())
                 if key_count > 0:
                     car_name = Car.objects.get(unique_key=item).name
-                combined_dict = {"car": car_name, "count": key_count}
-                self.results.append(combined_dict)
+                    combined_dict = {"car": car_name, "count": key_count}
+                    self.results.append(combined_dict)
 
         return Response(self.results, status.HTTP_200_OK)
 
