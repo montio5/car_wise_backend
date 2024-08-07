@@ -95,7 +95,7 @@ class CarِDashboardAPI(APIView):
                 amount = field.last_mileage_changed
                 limit = field.mileage_per_change + field.last_mileage_changed
                 diff = mileage.mileage - field.last_mileage_changed
-                pct = 100 * diff / field.mileage_per_change 
+                pct = 100 * diff / field.mileage_per_change
                 resp_dict = {
                     "amount": amount,
                     "limit": limit,
@@ -146,10 +146,10 @@ class CarِDashboardAPI(APIView):
                             f"{AppMessages.COMMA.value} ", 1
                         )
                     )
-                elif len(parts)==1:
+                elif len(parts) == 1:
                     message = parts[0]
 
-                elif len(parts) ==0:
+                elif len(parts) == 0:
                     # if exact date has come
                     message = AppMessages.DAY.value.format("1")
 
@@ -200,7 +200,7 @@ class DataChecker(APIView):
     message_dict = {}
 
     def get(self, request):
-        user = self.request.user
+        user = request.user
         user_cars = user.user_cars.all()
         if user_cars:
             for car in user_cars:
@@ -208,7 +208,7 @@ class DataChecker(APIView):
                 if mileages:
                     last_mileage = mileages.first()
                     self.custom_field_check(car, last_mileage.mileage)
-                    self.original_fields_check(car, last_mileage,last_mileage.mileage)
+                    self.original_fields_check(car, last_mileage, last_mileage.mileage)
 
         return Response(self.message_dict, status.HTTP_200_OK)
 
@@ -235,9 +235,7 @@ class DataChecker(APIView):
 
     def check_mileage_condition(self, car, field, mileage):
         try:
-            if mileage > (
-                field.mileage_per_change + field.last_mileage_changed
-            ):
+            if mileage > (field.mileage_per_change + field.last_mileage_changed):
                 self.message_dict[car.unique_key][field.id] = {
                     "status": CUSTOM,
                     "field_name": field.name,
@@ -304,10 +302,7 @@ class DataChecker(APIView):
                     }
             else:
                 setup_data = getattr(car_setup_data, field_name)
-                if (
-                    field_value is not None
-                    and field_value + setup_data < mileage
-                ):
+                if field_value is not None and field_value + setup_data <= mileage:
                     self.message_dict[car.unique_key][field_name] = {
                         "status": details["status"],
                         "field_name": Mileage._meta.get_field(field_name).verbose_name,
@@ -318,11 +313,12 @@ class DataChecker(APIView):
                     }
 
 
-
 # ______________________ Get Notification API ______________________ #
+
 
 class GetNotificationAPI(DataChecker):
     results = []
+
     def get(self, request):
         user = self.request.user
         user_cars = user.user_cars.all()
@@ -330,59 +326,63 @@ class GetNotificationAPI(DataChecker):
             for car in user_cars:
                 mileages = Mileage.objects.filter(car=car).order_by("-created_date")
 
-                mileages_data = list(mileages.values('created_date', 'mileage'))
+                mileages_data = list(mileages.values("created_date", "mileage"))
                 num_records = len(mileages_data)
 
                 if num_records < 10:
                     estimated_mileage = self.estimate_mileage_average(mileages_data)
                 else:
                     estimated_mileage = self.estimate_mileage_learning(mileages_data)
-                
+
                 mileage_obj = mileages.first()
                 self.custom_field_check(car, estimated_mileage)
                 self.original_fields_check(car, mileage_obj, estimated_mileage)
 
             for item in self.message_dict.keys():
                 key_count = len(self.message_dict[item].keys())
-                if key_count>0:
-                   car_name = Car.objects.get(unique_key =item).name
-                combined_dict ={"car": car_name , "count":key_count}
+                if key_count > 0:
+                    car_name = Car.objects.get(unique_key=item).name
+                combined_dict = {"car": car_name, "count": key_count}
                 self.results.append(combined_dict)
 
         return Response(self.results, status.HTTP_200_OK)
 
     def estimate_mileage_average(self, mileages_data):
         # Extract mileage values from the data
-        mileages_values = [m['mileage'] for m in mileages_data]
-        
+        mileages_values = [m["mileage"] for m in mileages_data]
+
         # Calculate the differences between successive mileage records
-        mileage_diffs = [mileages_values[i] - mileages_values[i-1] for i in range(1, len(mileages_values))]
-        
+        mileage_diffs = [
+            mileages_values[i] - mileages_values[i - 1]
+            for i in range(1, len(mileages_values))
+        ]
+
         # Compute the average of these differences
         average_increase = np.mean(mileage_diffs)
-        
+
         # Use the last recorded mileage to estimate the next mileage
         last_mileage = mileages_values[-1]
         estimated_mileage = last_mileage + average_increase
-        
+
         return estimated_mileage
 
     def estimate_mileage_learning(self, mileages_data):
-        dates = [m['created_date'].timestamp() for m in mileages_data]
-        mileages_values = [m['mileage'] for m in mileages_data]
+        dates = [m["created_date"].timestamp() for m in mileages_data]
+        mileages_values = [m["mileage"] for m in mileages_data]
 
         # Convert dates and mileage values to numpy arrays
         X = np.array(dates).reshape(-1, 1)
         y = np.array(mileages_values)
 
         # Perform linear regression
-        X_b = np.c_[np.ones((X.shape[0], 1)), X]  # Add a column of ones for the intercept
+        X_b = np.c_[
+            np.ones((X.shape[0], 1)), X
+        ]  # Add a column of ones for the intercept
         theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
 
         # Predict mileage for the next day
         last_date = dates[-1]
-        next_date = last_date + 24*3600
+        next_date = last_date + 24 * 3600
         predicted_mileage = theta_best[0] + theta_best[1] * next_date
 
         return predicted_mileage
-    
