@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError
 
 from apps.common.message import AppMessages
 
@@ -7,6 +9,11 @@ from apps.common.message import AppMessages
 class UserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
+        try:
+            EmailValidator()(value)
+        except ValidationError:
+            raise serializers.ValidationError("Invalid email format.")
+
         request = self.context.get("request")
         if request.method == "PUT":
             instance = self.instance
