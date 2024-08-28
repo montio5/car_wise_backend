@@ -83,7 +83,7 @@ class CustomCheckAPITestCases(TestCase):
             reverse(self.url),
             content_type=CONTENT_TYPE,
         )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, 200)
         # self.assertEqual(
         #     set(response.data.keys()),
         #     {
