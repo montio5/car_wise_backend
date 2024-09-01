@@ -2,6 +2,7 @@
 python manage.py dumpdata > backup.json
 
 --restore db
+python ./manage.py reset_db --noinput
 python manage.py loaddata backup.json
 
 
