@@ -1,4 +1,3 @@
-from apps.user.models import BlacklistedToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,6 +7,7 @@ from rest_framework.generics import (
     CreateAPIView,
     RetrieveUpdateAPIView,
 )
+from apps.user.models import BlacklistedToken, UserFCMToken
 from apps.user.serializers import UserSerializer,RegisterUserSerializer,ChangePasswordSerializer
 
 
@@ -46,7 +46,7 @@ class RetrieveUpdateUserView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
-    
+
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
@@ -58,7 +58,7 @@ class ChangePasswordView(APIView):
             request.user.save()
             return Response({'detail': 'Password updated successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class LogoutAPI(APIView):
     permission_classes = [IsAuthenticated]
@@ -75,4 +75,20 @@ class LogoutAPI(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+class FCMTokenViewSet(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        token = request.data.get("fcm_token")
+        if token:
+            UserFCMToken.objects.filter(token=token).delete()
+
+            # Save or update the FCM token associated with the user
+            UserFCMToken.objects.update_or_create(
+                user=request.user,
+                defaults={"token": token}, 
+            )
+            return Response({"message": "FCM token saved successfully."})
+        return Response({"error": "No token provided."}, status=400)
