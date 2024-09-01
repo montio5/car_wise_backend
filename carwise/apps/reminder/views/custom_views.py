@@ -2,7 +2,7 @@
 import logging
 
 # First Party Imports
-from apps.common.firebase import send_fcm_notification
+# from apps.common.firebase import send_fcm_notification
 from apps.reminder.serializers.custom_serializers import (
     CustomFieldSerializer,
     CustomSetupSerializer,
@@ -92,14 +92,14 @@ class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         # TODO: remove after test
-        fcm_tokens = request.user.user.fcm_tokens.all()
+        # fcm_tokens = request.user.user.fcm_tokens.all()
 
-        if fcm_tokens:
-            send_fcm_notification(
-                fcm_tokens.first().token,
-                "a new custom field",
-                "a new custom field is added successfully",
-            )
+        # if fcm_tokens:
+        #     send_fcm_notification(
+        #         fcm_tokens.first().token,
+        #         "a new custom field",
+        #         "a new custom field is added successfully",
+        #     )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_object(self):
