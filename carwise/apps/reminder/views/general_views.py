@@ -21,7 +21,7 @@ from rest_framework.generics import (
     get_object_or_404,
 )
 
-import numpy as np
+# import numpy as np
 
 SERIOUS = "Serious"
 MEDIUM = "Medium"
@@ -323,78 +323,78 @@ class DataChecker(APIView):
 # ______________________ Get Notification API ______________________ #
 
 
-class GetNotificationAPI(DataChecker):
+# class GetNotificationAPI(DataChecker):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.message_dict = {}
-        self.results = []
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.message_dict = {}
+#         self.results = []
 
-    def get(self, request):
-        self.message_dict = {}
-        user = self.request.user
-        user_cars = user.user_cars.all()
-        if user_cars:
-            for car in user_cars:
-                mileages = Mileage.objects.filter(car=car).order_by("-created_date")
+#     def get(self, request):
+#         self.message_dict = {}
+#         user = self.request.user
+#         user_cars = user.user_cars.all()
+#         if user_cars:
+#             for car in user_cars:
+#                 mileages = Mileage.objects.filter(car=car).order_by("-created_date")
 
-                mileages_data = list(mileages.values("created_date", "mileage"))
-                num_records = len(mileages_data)
+#                 mileages_data = list(mileages.values("created_date", "mileage"))
+#                 num_records = len(mileages_data)
 
-                if num_records < 10:
-                    estimated_mileage = self.estimate_mileage_average(mileages_data)
-                else:
-                    estimated_mileage = self.estimate_mileage_learning(mileages_data)
+#                 if num_records < 10:
+#                     estimated_mileage = self.estimate_mileage_average(mileages_data)
+#                 else:
+#                     estimated_mileage = self.estimate_mileage_learning(mileages_data)
 
-                mileage_obj = mileages.first()
-                self.custom_field_check(car, estimated_mileage)
-                self.original_fields_check(car, mileage_obj, estimated_mileage)
+#                 mileage_obj = mileages.first()
+#                 self.custom_field_check(car, estimated_mileage)
+#                 self.original_fields_check(car, mileage_obj, estimated_mileage)
 
-            for item in self.message_dict.keys():
-                key_count = len(self.message_dict[item].keys())
-                if key_count > 0:
-                    car_name = Car.objects.get(unique_key=item).name
-                    combined_dict = {"car": car_name, "count": key_count}
-                    self.results.append(combined_dict)
+#             for item in self.message_dict.keys():
+#                 key_count = len(self.message_dict[item].keys())
+#                 if key_count > 0:
+#                     car_name = Car.objects.get(unique_key=item).name
+#                     combined_dict = {"car": car_name, "count": key_count}
+#                     self.results.append(combined_dict)
 
-        return Response(self.results, status.HTTP_200_OK)
+#         return Response(self.results, status.HTTP_200_OK)
 
-    def estimate_mileage_average(self, mileages_data):
-        # Extract mileage values from the data
-        mileages_values = [m["mileage"] for m in mileages_data]
+#     def estimate_mileage_average(self, mileages_data):
+#         # Extract mileage values from the data
+#         mileages_values = [m["mileage"] for m in mileages_data]
 
-        # Calculate the differences between successive mileage records
-        mileage_diffs = [
-            mileages_values[i] - mileages_values[i - 1]
-            for i in range(1, len(mileages_values))
-        ]
+#         # Calculate the differences between successive mileage records
+#         mileage_diffs = [
+#             mileages_values[i] - mileages_values[i - 1]
+#             for i in range(1, len(mileages_values))
+#         ]
 
-        # Compute the average of these differences
-        average_increase = np.mean(mileage_diffs)
+#         # Compute the average of these differences
+#         average_increase = np.mean(mileage_diffs)
 
-        # Use the last recorded mileage to estimate the next mileage
-        last_mileage = mileages_values[-1]
-        estimated_mileage = last_mileage + average_increase
+#         # Use the last recorded mileage to estimate the next mileage
+#         last_mileage = mileages_values[-1]
+#         estimated_mileage = last_mileage + average_increase
 
-        return estimated_mileage
+#         return estimated_mileage
 
-    def estimate_mileage_learning(self, mileages_data):
-        dates = [m["created_date"].timestamp() for m in mileages_data]
-        mileages_values = [m["mileage"] for m in mileages_data]
+#     def estimate_mileage_learning(self, mileages_data):
+#         dates = [m["created_date"].timestamp() for m in mileages_data]
+#         mileages_values = [m["mileage"] for m in mileages_data]
 
-        # Convert dates and mileage values to numpy arrays
-        X = np.array(dates).reshape(-1, 1)
-        y = np.array(mileages_values)
+#         # Convert dates and mileage values to numpy arrays
+#         X = np.array(dates).reshape(-1, 1)
+#         y = np.array(mileages_values)
 
-        # Perform linear regression
-        X_b = np.c_[
-            np.ones((X.shape[0], 1)), X
-        ]  # Add a column of ones for the intercept
-        theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
+#         # Perform linear regression
+#         X_b = np.c_[
+#             np.ones((X.shape[0], 1)), X
+#         ]  # Add a column of ones for the intercept
+#         theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
 
-        # Predict mileage for the next day
-        last_date = dates[-1]
-        next_date = last_date + 24 * 3600
-        predicted_mileage = theta_best[0] + theta_best[1] * next_date
+#         # Predict mileage for the next day
+#         last_date = dates[-1]
+#         next_date = last_date + 24 * 3600
+#         predicted_mileage = theta_best[0] + theta_best[1] * next_date
 
-        return predicted_mileage
+#         return predicted_mileage

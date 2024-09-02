@@ -12,7 +12,7 @@ from apps.reminder.views.custom_views import (
     CustomFieldListAPI,
     CustomFieldUpdateDestroyAPI,
 )
-from apps.reminder.views.general_views import CarListAPI, DataChecker, GetNotificationAPI,CarِDashboardAPI
+from apps.reminder.views.general_views import CarListAPI, DataChecker,CarِDashboardAPI
 
 
 # _________________________ general ________________________ #
@@ -20,7 +20,7 @@ from apps.reminder.views.general_views import CarListAPI, DataChecker, GetNotifi
 general_apis = [
     path("car-models", CarListAPI.as_view(), name="car_models"),
     path("car-dashboard/<str:unique_key>/", CarِDashboardAPI.as_view(), name="car_dashboard"),
-    path("notification", GetNotificationAPI.as_view(), name="notification"),
+    # path("notification", GetNotificationAPI.as_view(), name="notification"),
 ]
 # _________________________ car ________________________ #
 
