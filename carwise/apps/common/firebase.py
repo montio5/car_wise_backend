@@ -1,8 +1,13 @@
-# fcm.py
+import os
 import json
+
+from django.conf import settings
 from pyfcm import FCMNotification
 
-with open('serviceAccountKey.json') as f:
+service_account_path = os.path.join(settings.STATIC_ROOT, "serviceAccountKey.json")
+
+
+with open(service_account_path) as f:
     config = json.load(f)
 
 push_service = FCMNotification(config["private_key"], config["project_id"])

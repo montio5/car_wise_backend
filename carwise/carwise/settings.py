@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from datetime import timedelta
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +29,6 @@ SECRET_KEY = "django-insecure-bs_17wrwc3$cphvc46gu06+es&f2asvvwp6%fjd#hn2#_^2n7#
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "carwise.pythonanywhere.com"]
-
 
 # Application definition
 
