@@ -1,30 +1,24 @@
-# import firebase_admin
-# from firebase_admin import credentials, messaging
+# fcm.py
+import json
+from pyfcm import FCMNotification
 
-# # Path to your service account key file
-# service_account_path = "serviceAccountKey.json"
+with open('serviceAccountKey.json') as f:
+    config = json.load(f)
 
-# # Initialize the Firebase Admin SDK with the service account
-# cred = credentials.Certificate(service_account_path)
-# firebase_admin.initialize_app(cred)
+push_service = FCMNotification(config["private_key"], config["project_id"])
 
-
-# def send_fcm_notification(token, title, body):
-#     """
-#     Sends a push notification to a single device using Firebase Cloud Messaging.
-
-#     :param token: The FCM token of the device to send the notification to.
-#     :param title: The title of the notification.
-#     :param body: The body text of the notification.
-#     """
-#     message = messaging.Message(
-#         notification=messaging.Notification(
-#             title=title,
-#             body=body,
-#         ),
-#         token=token,
-#     )
-
-#     # Send the message
-#     response = messaging.send(message)
-#     print("Successfully sent message:", response)
+def send_fcm_message(user, message_title, message_body, data_message=None):
+    fcm_token = user.fcm_tokens.first()
+    if fcm_token:
+        result = push_service.notify_single_device(
+            registration_id=fcm_token.token,
+            message_title=message_title,
+            message_body=message_body,
+            data_message=data_message,
+        )
+        if result['success'] == 1:
+            return True
+        else:
+            return False
+    else:
+        return False
