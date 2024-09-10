@@ -16,7 +16,8 @@ with open(service_account_path) as f:
 
 # Initialize the FCMNotification object using the FCM server key and project_id
 push_service = FCMNotification(
-    api_key=config["private_key"], project_id=config["project_id"]
+    service_account_file=service_account_path,
+    project_id=config["project_id"],
 )
 
 
