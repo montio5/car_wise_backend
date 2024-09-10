@@ -14,8 +14,10 @@ service_account_path = os.path.join(settings.STATIC_ROOT, "serviceAccountKey.jso
 with open(service_account_path) as f:
     config = json.load(f)
 
-# Initialize the FCMNotification object using both the FCM server key and project_id
-push_service = FCMNotification(config["private_key"], config["project_id"])
+# Initialize the FCMNotification object using the FCM server key and project_id
+push_service = FCMNotification(
+    api_key=config["private_key"], project_id=config["project_id"]
+)
 
 
 def send_fcm_message(user, notification_body, data_payload=None):
