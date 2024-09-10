@@ -97,7 +97,7 @@ class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
         send_fcm_message(
                 request.user,
                 "a new custom field",
-                "a new custom field is added successfully",
+                # "a new custom field is added successfully",
             )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
