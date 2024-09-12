@@ -1,51 +1,64 @@
-import os
+# views.py
+
 import json
-import logging
-from django.conf import settings
-from pyfcm import FCMNotification
+import requests
+from django.http import JsonResponse
+from django.contrib.auth.models import User
 
-# Set up logging
-logger = logging.getLogger("my_app")
-
-# Path to your service account key
-service_account_path = os.path.join(settings.STATIC_ROOT, "serviceAccountKey.json")
-
-# Load the service account details from the file
-with open(service_account_path) as f:
-    config = json.load(f)
-
-# Initialize the FCMNotification object using the FCM server key and project_id
-push_service = FCMNotification(
-    service_account_file=service_account_path,
-    project_id=config["project_id"],
-)
+from apps.user.models import UserFCMToken
 
 
-def send_fcm_message(user, notification_body, data_payload=None):
-    # Get the user's FCM token
-    fcm_token = user.fcm_tokens.first()
+def send_push_notification(user, title, message):
+    expo_url = "https://exp.host/--/api/v2/push/send"
 
-    if fcm_token:
-        try:
-            # Send a notification with optional data payload
-            result = push_service.notify(
-                fcm_token=fcm_token.token,
-                notification_body=notification_body,
-                data_payload=data_payload,
-            )
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+    token=user.fcm_tokens.first()
+    data = {
+        "to": token,
+        "title": title,
+        "body": message,
+    }
 
-            logger.info(f"FCM message sent: {result}")
+    response = requests.post(expo_url, headers=headers, json=data)
 
-            # Check if the notification was successfully sent
-            if result["success"] == 1:
-                logger.debug("Notification sent successfully.")
-                return True
-            else:
-                logger.warning("Failed to send notification.")
-                return False
-        except Exception as e:
-            logger.error(f"Error sending FCM message: {e}")
-            return False
+    if response.status_code == 200:
+        return response.json()
     else:
-        logger.warning("No FCM token found for the user.")
-        return False
+        return None
+
+
+def send_notification(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            user_id = data.get("user_id")
+            title = data.get("title", "No Title")
+            message = data.get("message", "No Message")
+
+            # Fetch the user and their token
+            user = User.objects.get(id=user_id)
+            push_token = UserFCMToken.objects.get(user=user).token
+
+            # Send the notification using Expo's Push API
+            response = send_push_notification(push_token, title, message)
+
+            if response:
+                return JsonResponse(
+                    {"status": "Notification sent successfully", "response": response}
+                )
+            else:
+                return JsonResponse(
+                    {"error": "Failed to send notification"}, status=500
+                )
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "User not found"}, status=404)
+        except UserFCMToken.DoesNotExist:
+            return JsonResponse({"error": "Push token not found for user"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
