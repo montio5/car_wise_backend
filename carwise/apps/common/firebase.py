@@ -15,19 +15,21 @@ def send_push_notification(user, title, message):
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
-    token=user.fcm_tokens.first()
-    data = {
-        "to": token,
-        "title": title,
-        "body": message,
-    }
+    tokens=user.fcm_tokens.all()
+    if tokens:
+        fcm_token = tokens.first()
+        data = {
+            "to": fcm_token.token,
+            "title": title,
+            "body": message,
+        }
 
-    response = requests.post(expo_url, headers=headers, json=data)
+        response = requests.post(expo_url, headers=headers, json=data)
 
-    if response.status_code == 200:
-        return response.json()
-    else:
+        if response.status_code == 200:
+            return response.json()
         return None
+    return None
 
 
 def send_notification(request):
