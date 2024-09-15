@@ -10,9 +10,6 @@ from apps.reminder.serializers.car_serializers import (
     MileageSerializer,
     UserCarListSerializer,
 )
-
-# Django
-
 # Third Party Packages
 from rest_framework.generics import (
     CreateAPIView,

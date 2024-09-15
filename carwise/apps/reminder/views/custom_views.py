@@ -94,11 +94,11 @@ class CustomFieldUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
         serializer.save()
         # TODO: remove after test
 
-        send_push_notification(
-            request.user,
-            "a new custom field",
-            "a new custom field is added successfully",
-        )
+        # send_push_notification(
+        #     request.user,
+        #     "a new custom field",
+        #     "a new custom field is added successfully",
+        # )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_object(self):

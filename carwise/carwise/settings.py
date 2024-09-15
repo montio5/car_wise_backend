@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'whitenoise.runserver_nostatic',
-    'django_extensions',
+    "whitenoise.runserver_nostatic",
+    "django_extensions",
     #
     "rest_framework",
     "rest_framework_simplejwt",
@@ -95,7 +95,7 @@ SWAGGER_SETTINGS = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -176,7 +176,7 @@ USE_THOUSAND_SEPARATOR = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -198,5 +198,36 @@ LANGUAGES = [
 
 # Path to the locale directory
 LOCALE_PATHS = [
-    BASE_DIR /"apps/locale",
+    BASE_DIR / "apps/locale",
 ]
+
+ALLOWED_CAR_AMOUNT = 4
+
+# celery
+from celery.schedules import crontab
+# Load default Celery broker URL from environment or fallback to a default value
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+
+# Other Celery settings
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+
+
+# CELERY_BEAT_SCHEDULE = {
+#     "send-notifications-every-3-days": {
+#         "task": "carwise.tasks.send_notifications",
+#         "schedule": crontab(day_of_week="*/3"),  # Runs every 3 days
+#     },
+# }
+CELERY_BEAT_SCHEDULE = {
+    "send-notifications-every-minute": {
+        "task": "carwise.tasks.send_notifications",  # Path to your task
+        "schedule": crontab(minute="*"),  # This will run every minute
+    },
+}
+
+
+try:
+    from .local import *
+except ImportError:
+    pass

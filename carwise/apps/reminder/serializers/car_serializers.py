@@ -2,6 +2,7 @@
 import secrets
 
 # Third Party Packages
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from apps.common.message import AppMessages
@@ -182,21 +183,11 @@ class CarSerializer(serializers.ModelSerializer):
             data["mileage_info"] = MileageSerializer(last_mileage).data
         return data
 
-    # def validate(self, object):
-    #     if object.car in Car.objects.filter(user=self.context.get("request").user):
-    #         raise ValidationError(AppMessages.NOT_ALOWED_TO_CHANGE.value)
-    #     return object
+    def validate(self, object):
+        if (
+            len(Car.objects.filter(user=self.context.get("request").user))
+            <= settings.ALLOWED_CAR_AMOUNT
+        ):
+            return object
+        raise ValidationError(AppMessages.MAX_CAR_ERROR.value)
 
-    # def create(self, validated_data):
-    #     validated_data.pop("created_date", None)
-    #     validated_data.pop("unique_key", None)
-    #     mileage = Mileage.objects.create(**validated_data)
-    #     return mileage
-
-    # def update(self, instance, validated_data):
-    #     validated_data.pop("created_date", None)
-    #     validated_data.pop("unique_key", None)
-    #     for attr, value in validated_data.items():
-    #         setattr(instance, attr, value)
-    #     instance.save()
-    #     return instance

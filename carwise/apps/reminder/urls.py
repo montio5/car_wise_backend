@@ -62,7 +62,7 @@ car_custom_setup = [
         name="car_setup_edit_delete",
     ),
 ]
-# _________________________ car custom setup ________________________ #
+# _________________________ general apis ________________________ #
 
 check_data = [
     path(
