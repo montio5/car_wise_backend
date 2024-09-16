@@ -203,28 +203,6 @@ LOCALE_PATHS = [
 
 ALLOWED_CAR_AMOUNT = 4
 
-# celery
-from celery.schedules import crontab
-# Load default Celery broker URL from environment or fallback to a default value
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
-
-# Other Celery settings
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-
-
-# CELERY_BEAT_SCHEDULE = {
-#     "send-notifications-every-3-days": {
-#         "task": "carwise.tasks.send_notifications",
-#         "schedule": crontab(day_of_week="*/3"),  # Runs every 3 days
-#     },
-# }
-CELERY_BEAT_SCHEDULE = {
-    "send-notifications-every-minute": {
-        "task": "carwise.tasks.send_notifications",  # Path to your task
-        "schedule": crontab(minute="*"),  # This will run every minute
-    },
-}
 
 
 try:

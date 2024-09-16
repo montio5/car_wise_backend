@@ -1,11 +1,4 @@
-# views.py
-
-import json
 import requests
-from django.http import JsonResponse
-from django.contrib.auth.models import User
-
-from apps.user.models import UserFCMToken
 
 
 def send_push_notification(user, title, message):

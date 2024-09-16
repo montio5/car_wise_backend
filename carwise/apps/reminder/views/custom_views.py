@@ -3,7 +3,7 @@ import logging
 
 # First Party Imports
 # from apps.common.firebase import send_fcm_notification
-from apps.common.firebase import  send_push_notification
+from apps.common.notification import  send_push_notification
 from apps.reminder.serializers.custom_serializers import (
     CustomFieldSerializer,
     CustomSetupSerializer,
