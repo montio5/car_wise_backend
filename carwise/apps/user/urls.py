@@ -8,6 +8,7 @@ from apps.user.views import (
     ChangePasswordView,
     FCMTokenViewSet,
     VerifyCodeView,
+    ResetPasswordAPI,
 )
 
 urlpatterns = [
@@ -17,5 +18,6 @@ urlpatterns = [
     path("change-password/", ChangePasswordView.as_view(), name="change-password"),
     path("forgot-password/", ForgotPasswordView.as_view(), name="forgot-password"),
     path("varify-code/", VerifyCodeView.as_view(), name="change-password"),
+    path("reset-password/", ResetPasswordAPI.as_view(), name="reset_password"),
     path("fcm-token/", FCMTokenViewSet.as_view(), name="fcm_token"),
 ]
