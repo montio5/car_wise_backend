@@ -9,6 +9,11 @@ from rest_framework.generics import (
 )
 from apps.user.models import BlacklistedToken, UserFCMToken
 from apps.user.serializers import UserSerializer,RegisterUserSerializer,ChangePasswordSerializer
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
+from django.conf import settings
+from rest_framework import status
 
 
 class RegisterAPIView(CreateAPIView):
@@ -92,3 +97,40 @@ class FCMTokenViewSet(APIView):
             )
             return Response({"message": "FCM token saved successfully."})
         return Response({"error": "No token provided."}, status=400)
+
+
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        user = User.objects.filter(email=email).first()
+        if user:
+            code = get_random_string(length=6)
+            send_mail(
+                "Forgot Password",
+                f"Your reset code is: {code}",
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+            # Store the code in the user's session or a cache
+            request.session["reset_code"] = code
+            return Response(
+                {"message": "Code sent to your email"}, status=status.HTTP_200_OK
+            )
+        return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyCodeView(APIView):
+    def post(self, request):
+        code = request.data.get("code")
+        stored_code = request.session.get("reset_code")
+        if code == stored_code:
+            # Enable password reset for the user
+            user = User.objects.filter(email=request.data.get("email")).first()
+            user.is_active = True
+            user.save()
+            return Response(
+                {"message": "Password reset enabled"}, status_code=status.HTTP_200_OK
+            )
+        return Response({"error": "Invalid code"}, status_code=400)
