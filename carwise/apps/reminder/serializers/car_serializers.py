@@ -184,10 +184,10 @@ class CarSerializer(serializers.ModelSerializer):
         return data
 
     def validate(self, object):
-        if (self.instance is None and
+        if ( self.instance is None and
             len(Car.objects.filter(user=self.context.get("request").user))
-            <= settings.ALLOWED_CAR_AMOUNT
+            >= settings.ALLOWED_CAR_AMOUNT
         ):
-            return object
-        raise ValidationError(AppMessages.MAX_CAR_ERROR.value)
+            raise ValidationError(AppMessages.MAX_CAR_ERROR.value)
+        return object
 
