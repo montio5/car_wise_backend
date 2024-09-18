@@ -22,6 +22,7 @@ import random
 from django.conf import settings
 from rest_framework import status
 from apps.common.message import AppMessages
+from django.utils.html import format_html
 
 
 class RegisterAPIView(CreateAPIView):
@@ -132,9 +133,19 @@ class ForgotPasswordView(APIView):
         PasswordResetRequest.objects.create(user=user, code=str(code))
 
         # Send the email
+        subject = "Forgot Password"
+        message = format_html(
+            """
+            <div style="text-align: center;">
+                <p>Your password reset code is:</p>
+                <p><strong style="font-size: 18px;">{}</strong></p>
+                <p>Please use this code to reset your password. The code will expire in 5 minutes.</p>
+            </div>
+            """, code
+        )
         send_mail(
-            "Forgot Password",
-            f"Your reset code is: {code}",
+            subject,
+            message,
             settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
