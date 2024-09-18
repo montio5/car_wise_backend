@@ -11,7 +11,7 @@ from apps.user.models import BlacklistedToken, UserFCMToken
 from apps.user.serializers import UserSerializer,RegisterUserSerializer,ChangePasswordSerializer
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from django.utils.crypto import get_random_string
+import random
 from django.conf import settings
 from rest_framework import status
 
@@ -99,13 +99,13 @@ class FCMTokenViewSet(APIView):
         return Response({"error": "No token provided."}, status=400)
 
 
-
 class ForgotPasswordView(APIView):
     def post(self, request):
         email = request.data.get("email")
         user = User.objects.filter(email=email).first()
         if user:
-            code = get_random_string(length=6)
+            code  = random.randint(100000, 999999)
+
             send_mail(
                 "Forgot Password",
                 f"Your reset code is: {code}",
@@ -126,10 +126,6 @@ class VerifyCodeView(APIView):
         code = request.data.get("code")
         stored_code = request.session.get("reset_code")
         if code == stored_code:
-            # Enable password reset for the user
-            user = User.objects.filter(email=request.data.get("email")).first()
-            user.is_active = True
-            user.save()
             return Response(
                 {"message": "Password reset enabled"}, status_code=status.HTTP_200_OK
             )
