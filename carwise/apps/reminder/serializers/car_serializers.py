@@ -184,7 +184,7 @@ class CarSerializer(serializers.ModelSerializer):
         return data
 
     def validate(self, object):
-        if (
+        if (self.instance is None and
             len(Car.objects.filter(user=self.context.get("request").user))
             <= settings.ALLOWED_CAR_AMOUNT
         ):

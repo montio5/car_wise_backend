@@ -21,6 +21,7 @@ general_apis = [
     path("car-models", CarListAPI.as_view(), name="car_models"),
     path("car-dashboard/<str:unique_key>/", CarِDashboardAPI.as_view(), name="car_dashboard"),
     # path("notification", GetNotificationAPI.as_view(), name="notification"),
+    
 ]
 # _________________________ car ________________________ #
 
@@ -79,6 +80,6 @@ urlpatterns = [
     path("mileage/", include(mileage)),
     path("custom-field/<str:car_unique_key>/", include(custom_field)),
     path("custom-setup/", include(car_custom_setup)),
-    path("check-data/", include(check_data)),
+    path("notifications/", include(check_data)),
     path("", include(general_apis)),
 ]

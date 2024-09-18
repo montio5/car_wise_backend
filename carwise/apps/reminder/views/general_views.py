@@ -240,7 +240,6 @@ class DataChecker(APIView):
         return user.user_cars.all()
 
     def get(self, request):
-        self.message_dict = {}
         user_cars = self.get_queryset()
 
         if user_cars:

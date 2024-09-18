@@ -18,15 +18,22 @@ def check_condition(condition, message_dict, car, field, field_id, status, messa
     if condition:
         if car.unique_key not in message_dict:
             message_dict[car.unique_key] = {}
-        if field_id not in message_dict[car.unique_key]:
-            message_dict[car.unique_key][field_id] = {}
-
-        message_dict[car.unique_key][field_id] = {
-            "status": status,
-            "field_name": field.name,
-            "message": message.format(field.name),
-            "car": car.name,
-        }
+        if field_id : # is custom_field
+            if field_id not in message_dict[car.unique_key]:
+                message_dict[car.unique_key][field_id]={}
+            message_dict[car.unique_key][field_id] = {
+                "status": status,
+                "field_name": field.name,
+                "message": message.format(field.name),
+                "car": car.name,
+            }
+        else:
+            message_dict[car.unique_key][field]={
+                "status": status,
+                "field_name": field,
+                "message": message.format(field),
+                "car": car.name,
+            }
 
 
 def check_mileage_condition(car, field, mileage, message_dict):
@@ -65,8 +72,6 @@ def check_custom_fields(car, mileage, message_dict):
         if field.mileage_per_change is not None or field.month_per_changes is not None:
             check_mileage_condition(car, field, mileage, message_dict)
             check_date_condition(car, field, message_dict)
-            if not message_dict[car.unique_key].get(field.id):
-                del message_dict[car.unique_key][field.id]
 
 
 def check_original_fields(car, mileage_obj, mileage, message_dict):
@@ -90,9 +95,6 @@ def check_original_fields(car, mileage_obj, mileage, message_dict):
         "front_suspension": {"status": INFO},
         "clutch_plate": {"status": MEDIUM},
     }
-
-    if car.unique_key not in message_dict:
-        message_dict[car.unique_key] = {}
 
     car_setup_data = car.setup
     for field_name, details in field_details.items():
@@ -126,8 +128,8 @@ def check_original_fields(car, mileage_obj, mileage, message_dict):
                     True,
                     message_dict,
                     car,
-                    field_value,
                     field_name,
+                    None,
                     details["status"],
                     message,
                 )
