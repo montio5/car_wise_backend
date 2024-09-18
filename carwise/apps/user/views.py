@@ -23,6 +23,7 @@ from django.conf import settings
 from rest_framework import status
 from apps.common.message import AppMessages
 from django.utils.html import format_html
+from django.core.mail import EmailMessage
 
 
 class RegisterAPIView(CreateAPIView):
@@ -134,22 +135,24 @@ class ForgotPasswordView(APIView):
 
         # Send the email
         subject = "Forgot Password"
-        message = format_html(
-            """
-            <div style="text-align: center;">
-                <p>Your password reset code is:</p>
-                <p><strong style="font-size: 18px;">{}</strong></p>
-                <p>Please use this code to reset your password. The code will expire in 5 minutes.</p>
-            </div>
-            """, code
+        # Format the HTML content
+        message = """
+        <div style="text-align: center;">
+            <p>Your password reset code is:</p>
+            <p><strong style="font-size: 18px;">{}</strong></p>
+            <p>Please use this code to reset your password. The code will expire in 5 minutes.</p>
+        </div>
+        """.format(code)
+        
+        # Create the EmailMessage object
+        email_message = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=settings.EMAIL_HOST_USER,
+            to=[email],
         )
-        send_mail(
-            subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
+        email_message.content_subtype = "html"  # This makes sure the email is sent as HTML
+        email_message.send(fail_silently=False)
 
         return Response(
             {"message": AppMessages.RESET_CODE_SENT_MSG.value},
