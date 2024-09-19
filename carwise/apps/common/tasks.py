@@ -1,9 +1,13 @@
 import os
+import sys
 import django
 import logging
 from django.contrib.auth.models import User
 from apps.common.notification import send_push_notification
 from apps.reminder.views.general_views import get_notification_for_user
+
+# Add the Django project root directory to the system path
+sys.path.append("/home/carwise/car_wise_backend/carwise")
 
 # Set the environment variable to point to your Django settings module
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "carwise.carwise.settings")
