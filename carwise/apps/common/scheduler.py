@@ -25,5 +25,6 @@ def send_notifications():
 def start_scheduler():
     scheduler.add_jobstore(DjangoJobStore(), "default")
     register_events(scheduler)
-    scheduler.add_job(send_notifications, "interval", days=14)
+    # scheduler.add_job(send_notifications, "interval", days=14)
+    scheduler.add_job(send_notifications, "interval", minutes=2)
     scheduler.start()

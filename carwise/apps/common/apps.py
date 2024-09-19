@@ -8,8 +8,8 @@ class CommonConfig(AppConfig):
 
     # comment this for first time running.
     # comment , migrate and then un comment it
-    # def ready(self):
-    #     from .scheduler import start_scheduler
+    def ready(self):
+        from .scheduler import start_scheduler
 
-    #     # Start the scheduler
-    #     start_scheduler()
+        # Start the scheduler
+        start_scheduler()
