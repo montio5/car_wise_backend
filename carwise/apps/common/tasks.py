@@ -12,11 +12,10 @@ sys.path.append("/home/carwise/car_wise_backend/carwise")
 # Set the environment variable to point to your Django settings module
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "carwise.carwise.settings")
 
-# Setup Django (required to access models and other Django features)
-django.setup()
 
-# Logging configuration (optional)
-logging.basicConfig(level=logging.INFO)
+def setup_django():
+    # Setup Django (required to access models and other Django features)
+    django.setup()
 
 
 def send_notifications():
@@ -36,4 +35,5 @@ def send_notifications():
 
 
 if __name__ == "__main__":
+    setup_django()
     send_notifications()
