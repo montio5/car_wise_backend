@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     #
     "rest_framework",
     "rest_framework_simplejwt",
-    "django_apscheduler",
+    # "django_apscheduler",
     #
     "apps.reminder",
     "apps.user",
