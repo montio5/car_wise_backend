@@ -215,14 +215,13 @@ def get_notification_for_user(user):
                     f"{car_name} has {count} elements"
                 )  # Join the message parts to form the final string
         if message_parts:
-            result_message = (
+            return (
                 ", ".join(message_parts[:-1])
                 + f" and {message_parts[-1]} to check based on estimated mileage."
             )
         else:
-            result_message ="checked. There is nothing to update."
+            return "checked. There is nothing to update."
 
-    return result_message
 
 # ______________________ Data Checker ______________________ #
 
