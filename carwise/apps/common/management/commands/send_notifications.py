@@ -10,8 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         logging.info("Executing send_notifications function...")
-        users = User.objects.all()
-
+        # only users who has the notification token
+        users = User.objects.filter(fcm_tokens__isnull=False).distinct()
         for user in users:
             try:
                 # Send push notification to each user
