@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-06 23:26+0330\n"
+"POT-Creation-Date: 2024-09-20 11:47+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,97 +42,129 @@ msgstr "Integrity error"
 msgid "Internal server error"
 msgstr "خطای سرور"
 
-#: .\apps\common\message.py:9
-msgid " you are not alowed to change this car mileage"
-msgstr "! شما مجاز به تغییر کیلومتر این ماشین نیستید  "
-
-#: .\apps\common\message.py:11
-msgid ""
-"Invalid custom field! one of the fields should be filled. fields are :{}"
-msgstr "! اطلاعات نا معتبر است. حداقل یکی از فیلد های {} باید پر شوند"
-
-#: .\apps\common\message.py:13
-msgid "{} should filed!"
-msgstr "! فیلد {} باید پر شود"
-
-#: .\apps\common\message.py:14
-msgid "Both {} and {} should filed!"
-msgstr "فیلد های '{}' و '{}' هر دو باید پر شوند"
-
-#: .\apps\common\message.py:15
-msgid "At last one section should be filled!"
-msgstr "حداقل فیلد های یک قسمت باید پر شوند"
-
-#: .\apps\common\message.py:18
-msgid "The field {} is greater than mileage you entered!"
-msgstr " مقداری که برای {} وارد کرده اید از کیلومتر فعلی ماشین بیشتر است"
-
-#: .\apps\common\message.py:21
-msgid "The field {} Should be greater than 0!"
-msgstr "فیلد {} نمیتواند صفر باشد"
-
-#: .\apps\common\message.py:23
-msgid "Last changed date can't be in future"
-msgstr "آخرین تاریخ تعویض نمیتواند در آینده باشد"
-
-#: .\apps\common\message.py:24
-msgid "This email is taken!"
-msgstr "! ایمیل قبلا انتخاب شده است"
-
-#: .\apps\common\message.py:25
-msgid "{} cannot be lower than the previous mileage."
-msgstr ""
-"{} کیلومتر تعویض قطعات نمیتواند از دفعه قبلی  که وارد کرده اید کمتر باشد "
-
-#: .\apps\common\message.py:27
+#: .\apps\common\message.py:10
 msgid "Your {} is overdue for replacement based on mileage."
 msgstr " مسافت قابل پیمایش برای  {} به انتها رسید است "
 
-#: .\apps\common\message.py:29
+#: .\apps\common\message.py:12
 msgid "It's been a considerable amount of time since your last {} change."
 msgstr " زمان زیادی میگذرد که {} را تعویض نکرده اید"
 
-#: .\apps\common\message.py:31
+#: .\apps\common\message.py:14
 msgid "Please check {} . long time no check!"
 msgstr "! لطفا {} را چک کنید. مدت زیادی از آخرین بازدیدتان میگذرد"
 
-#: .\apps\common\message.py:32
+#: .\apps\common\message.py:15
 msgid "{} passed!"
 msgstr "مدت {} گذشته "
 
-#: .\apps\common\message.py:33
+#: .\apps\common\message.py:16
 msgid "next {}"
 msgstr "حدوداً {} بعد"
 
-#: .\apps\common\message.py:34
+#: .\apps\common\message.py:17
 msgid "{} year(s)"
 msgstr "{} سال"
 
-#: .\apps\common\message.py:35
+#: .\apps\common\message.py:18
 msgid "{} month(s)"
 msgstr "{} ماه "
 
-#: .\apps\common\message.py:36
+#: .\apps\common\message.py:19
 msgid "{} day(s)"
 msgstr "{} روز "
 
-#: .\apps\common\message.py:37
+#: .\apps\common\message.py:20
 msgid "overdue"
 msgstr ""
 
 # msgid "Overdue"
 # msgstr "معوقه"
-#: .\apps\common\message.py:38
+#: .\apps\common\message.py:21
 msgid "and"
 msgstr "و"
 
-#: .\apps\common\message.py:39
+#: .\apps\common\message.py:22
 msgid ","
 msgstr "،"
 
-#: .\apps\common\message.py:40
+#: .\apps\common\message.py:23
+msgid "Code sent to your email"
+msgstr "کد به ایمیل شما ارسال شد"
+
+#: .\apps\common\message.py:24
+msgid "Password reset enabled"
+msgstr ""
+
+#: .\apps\common\message.py:25
+msgid "Password updated successfully"
+msgstr "رمز عبور با موفقیت به روز رسانی شد"
+
+#: .\apps\common\message.py:28
 msgid "Current password is incorrect."
 msgstr "رمز فعلی را اشتباه وارد کرده اید"
+
+#: .\apps\common\message.py:29
+msgid "User not found"
+msgstr "کاربر یافت نشد"
+
+#: .\apps\common\message.py:30
+msgid "Reset code not found"
+msgstr "کد وارد شده یافت نشد"
+
+#: .\apps\common\message.py:31
+msgid "The code is expired"
+msgstr "! کد منقضی شده است "
+
+#: .\apps\common\message.py:32
+msgid "Invalid code"
+msgstr "کد نا معتبر است"
+
+#: .\apps\common\message.py:33
+msgid "New password and its repeat do not match."
+msgstr "! رمز عبور و تکرار ان تطابق ندارند "
+
+#: .\apps\common\message.py:34
+msgid "{} cannot be lower than the previous mileage."
+msgstr ""
+"{} کیلومتر تعویض قطعات نمیتواند از دفعه قبلی  که وارد کرده اید کمتر باشد "
+
+#: .\apps\common\message.py:36
+msgid "You can not add more than {} cars in an account in free version"
+msgstr " شما مجاز به اضافه کردن بیش از {} خودرو نمی باشید"
+
+#: .\apps\common\message.py:41
+msgid ""
+"Invalid custom field! one of the fields should be filled. fields are :{}"
+msgstr "! اطلاعات نا معتبر است. حداقل یکی از فیلد های {} باید پر شوند"
+
+#: .\apps\common\message.py:43
+msgid "{} should filed!"
+msgstr "! فیلد {} باید پر شود"
+
+#: .\apps\common\message.py:44
+msgid "Both {} and {} should filed!"
+msgstr "فیلد های '{}' و '{}' هر دو باید پر شوند"
+
+#: .\apps\common\message.py:45
+msgid "At last one section should be filled!"
+msgstr "حداقل فیلد های یک قسمت باید پر شوند"
+
+#: .\apps\common\message.py:48
+msgid "The field {} is greater than mileage you entered!"
+msgstr " مقداری که برای {} وارد کرده اید از کیلومتر فعلی ماشین بیشتر است"
+
+#: .\apps\common\message.py:50
+msgid "The field {} Should be greater than 0!"
+msgstr "فیلد {} نمیتواند صفر باشد"
+
+#: .\apps\common\message.py:51
+msgid "Last changed date can't be in future"
+msgstr "آخرین تاریخ تعویض نمیتواند در آینده باشد"
+
+#: .\apps\common\message.py:52
+msgid "This email is taken!"
+msgstr "! ایمیل قبلا انتخاب شده است"
 
 #: .\apps\reminder\models.py:67
 msgid "Engine Oil"
@@ -209,3 +241,6 @@ msgstr "آخرین مسافت تعویض"
 #: .\apps\reminder\models.py:153
 msgid "Last Changed date"
 msgstr "آخرین تاریخ تعویض"
+
+#~ msgid " you are not alowed to change this car mileage"
+#~ msgstr "! شما مجاز به تغییر کیلومتر این ماشین نیستید  "
