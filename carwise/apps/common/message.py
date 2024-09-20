@@ -23,7 +23,10 @@ class AppMessages(enum.Enum):
     RESET_CODE_SENT_MSG = _("Code sent to your email")
     PASSWORD_RESET_ENABLED_MSG = _("Password reset enabled")
     PASSWORD_UPDATED_SUCCESS_MSG = _("Password updated successfully")
-
+    CAR_NOTIFICATION = _("{} has {} elements ")
+    CHECK_NOTIFICATION = _(" to check based on estimated mileage.")
+    NO_MESSAGE = _("checked. There is nothing to update.")
+    
     # Errors
     CURRENT_PASSWORD_IS_INCORRECT = _("Current password is incorrect.")
     USER_NOT_FOUND_MSG = _("User not found")

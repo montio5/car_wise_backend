@@ -212,13 +212,11 @@ def get_notification_for_user(user):
             count = len(fields)
             if count > 0:
                 message_parts.append(
-                    f"{car_name} has {count} elements"
+                    AppMessages.CAR_NOTIFICATION.value.format(car_name,count)
                 )  # Join the message parts to form the final string
         if message_parts:
-            return (
-                ", ".join(message_parts[:-1])
-                + f" and {message_parts[-1]} to check based on estimated mileage."
-            )
+            return (AppMessages.COMMA.value.join(message_parts[:-1])
+                + AppMessages.CHECK_NOTIFICATION.value.format(message_parts[-1]))
         else:
             return "checked. There is nothing to update."
 
