@@ -102,7 +102,7 @@ msgstr "رمز عبور با موفقیت به روز رسانی شد"
 
 #: .\apps\common\message.py:26
 msgid "{} has {} elements "
-msgstr "خودرو با نام {} {} مورد "
+msgstr "خودرو با نام '{}' {} مورد "
 
 #: .\apps\common\message.py:27
 msgid " to check based on estimated mileage."
