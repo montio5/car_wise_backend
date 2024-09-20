@@ -3,6 +3,8 @@ from apps.common.message import AppMessages
 from datetime import timedelta
 from django.utils import timezone
 
+from apps.reminder.models import Mileage
+
 SERIOUS = "Serious"
 MEDIUM = "Medium"
 INFO = "Informational"
@@ -28,10 +30,11 @@ def check_condition(condition, message_dict, car, field, field_id, status, messa
                 "car": car.name,
             }
         else:
-            message_dict[car.unique_key][field]={
+            field_name = Mileage._meta.get_field(field).verbose_name
+            message_dict[car.unique_key][field] = {
                 "status": status,
-                "field_name": field,
-                "message": message.format(field),
+                "field_name": field_name,
+                "message": message.format(field_name),
                 "car": car.name,
             }
 
