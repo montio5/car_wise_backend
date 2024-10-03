@@ -31,6 +31,7 @@ class AppMessages(enum.Enum):
         "Please use this code to reset your password. The code will expire in 5 minutes."
     )
     FORGOT_PASSWORD = _("Forgot Password")
+    PAST = _("{} ago updated")
     # Errors
     CURRENT_PASSWORD_IS_INCORRECT = _("Current password is incorrect.")
     USER_NOT_FOUND_MSG = _("User not found")
