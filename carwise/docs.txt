@@ -25,6 +25,11 @@ then refresh
 --refresh--
 touch /var/www/cochewen_pythonanywhere_com_wsgi.py
 
+
+--when ever the local get ahead from dev--
+git reset --hard
+git pull origin develop
+
 -----set up ---
 
 1-Once you have created your account, log in and go to the "Web" tab.

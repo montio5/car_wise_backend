@@ -130,7 +130,7 @@ msgstr "بازیابی رمز عبور"
 
 #: .\apps\common\message.py:34
 msgid "{} ago updated"
-msgstr " پیش به روزرسانی شد {} "
+msgstr "{} پیش به روزرسانی شد  "
 
 #: .\apps\common\message.py:36
 msgid "Current password is incorrect."
