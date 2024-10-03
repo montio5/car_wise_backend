@@ -62,6 +62,7 @@ class UserCarListSerializer(serializers.ModelSerializer):
         mileages = Mileage.objects.filter(car=value.id).order_by("-created_date")
         if mileages:
             return find_date_difference(mileages.first().created_date)
+        return None
 
     class Meta:
         model = Car
