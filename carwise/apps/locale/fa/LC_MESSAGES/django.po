@@ -279,4 +279,3 @@ msgstr "Medium"
 #: .\apps\reminder\models.py:160
 msgid "Information"
 msgstr "Information"
-
