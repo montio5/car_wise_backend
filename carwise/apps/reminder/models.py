@@ -151,7 +151,17 @@ class CustomFiled(models.Model):
     #
     last_mileage_changed = models.PositiveBigIntegerField(null=True,verbose_name=_("Last mileage changed"))
     last_date_changed = models.DateField(null=True,verbose_name=_("Last Changed date"))
-
+    SERIOUS = "SER"
+    MEDIUM = "MED"
+    INFO = "INF"
+    STATUS_CHOICE = [
+        (SERIOUS, _("Serious")),
+        (MEDIUM, _("Medium")),
+        (INFO, _("Information")),
+    ]
+    status = models.CharField(
+        max_length=3, choices=STATUS_CHOICE, default=INFO
+    )
     def __str__(self):
         return str(self.id) + "-" + self.name
 

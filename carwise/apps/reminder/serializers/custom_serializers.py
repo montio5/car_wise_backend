@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from apps.common.message import AppMessages
 from django.utils import timezone
 
-from apps.reminder.models import Car, CarCustomSetup, CustomFiled
+from apps.reminder.models import CarCustomSetup, CustomFiled
 
 # __________________  custom_field Serializer ___________________ #
 
@@ -21,6 +21,7 @@ class CustomFieldSerializer(serializers.ModelSerializer):
             "month_per_changes",
             "last_mileage_changed",
             "last_date_changed",
+            "status",
         ]
 
     def validate_last_mileage_changed(self, value):

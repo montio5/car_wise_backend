@@ -26,7 +26,11 @@ class AppMessages(enum.Enum):
     CAR_NOTIFICATION = _("{} has {} elements ")
     CHECK_NOTIFICATION = _(" to check based on estimated mileage.")
     NO_MESSAGE = _("checked. There is nothing to update.")
-    
+    YOUR_RESET_PASSWORD = _("Your password reset code is:")
+    USE_CODE_FOR_REST_PASS = _(
+        "Please use this code to reset your password. The code will expire in 5 minutes."
+    )
+    FORGOT_PASSWORD = _("Forgot Password")
     # Errors
     CURRENT_PASSWORD_IS_INCORRECT = _("Current password is incorrect.")
     USER_NOT_FOUND_MSG = _("User not found")

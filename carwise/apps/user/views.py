@@ -134,16 +134,20 @@ class ForgotPasswordView(APIView):
         PasswordResetRequest.objects.create(user=user, code=str(code))
 
         # Send the email
-        subject = "Forgot Password"
+        subject = AppMessages.FORGOT_PASSWORD.value
         # Format the HTML content
         message = """
         <div style="text-align: center;">
-            <p>Your password reset code is:</p>
+            <p>{}</p>
             <p><strong style="font-size: 18px;">{}</strong></p>
-            <p>Please use this code to reset your password. The code will expire in 5 minutes.</p>
+            <p>{}</p>
         </div>
-        """.format(code)
-        
+        """.format(
+            AppMessages.YOUR_RESET_PASSWORD.value, 
+            code, 
+            AppMessages.USE_CODE_FOR_REST_PASS.value
+        )
+
         # Create the EmailMessage object
         email_message = EmailMessage(
             subject=subject,

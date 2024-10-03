@@ -5,7 +5,9 @@ import secrets
 from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from apps.common.functions import timedelta_to_years_months_days
 from apps.common.message import AppMessages
+from datetime import datetime
 
 from apps.reminder.models import (
     Car,
@@ -19,6 +21,33 @@ from apps.reminder.serializers.custom_serializers import CustomFieldSerializer
 # First Party Imports
 
 # __________________  Car List Serializer ___________________ #
+def find_date_difference(previous_date):
+    current_date = datetime.now()
+    # Calculate the difference
+    date_difference = current_date.date() - previous_date.date()
+    #
+    years, months, days = timedelta_to_years_months_days(abs(date_difference))
+    parts = []
+    if years != 0:
+        parts.append(AppMessages.YEAR.value.format(years))
+    if months != 0:
+        parts.append(AppMessages.MONTH.value.format(months))
+    if days != 0:
+        parts.append(AppMessages.DAY.value.format(days))
+
+    if len(parts) > 1:
+        message = f" {AppMessages.AND.value} ".join(
+                        f"{AppMessages.COMMA.value} ".join(parts).rsplit(
+                            f"{AppMessages.COMMA.value} ", 1
+                        )
+                    )
+    elif len(parts) == 1:
+        message = parts[0]
+
+    elif len(parts) == 0:
+        # if exact date has come
+        message = AppMessages.DAY.value.format("1")
+    return message
 
 
 class UserCarListSerializer(serializers.ModelSerializer):
@@ -27,6 +56,12 @@ class UserCarListSerializer(serializers.ModelSerializer):
     unique_key = serializers.CharField(read_only=True)
     car_model = serializers.CharField(source="car_model.name")
     car_company = serializers.CharField(source="car_model.car_company.name")
+    car_mileage_update_date = serializers.SerializerMethodField()
+
+    def get_car_mileage_update_date(self,value):
+        mileages = Mileage.objects.filter(car=value.id).order_by("-created_date")
+        if mileages:
+            return find_date_difference(mileages.first().created_date)
 
     class Meta:
         model = Car
@@ -35,6 +70,7 @@ class UserCarListSerializer(serializers.ModelSerializer):
             "name",
             "car_company",
             "car_model",
+            "car_mileage_update_date",
         ]
 
 
@@ -190,4 +226,3 @@ class CarSerializer(serializers.ModelSerializer):
         ):
             raise ValidationError(AppMessages.MAX_CAR_ERROR.value)
         return object
-

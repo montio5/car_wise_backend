@@ -46,7 +46,9 @@ def check_mileage_condition(car, field, mileage, message_dict):
     try:
         condition = mileage > (field.mileage_per_change + field.last_mileage_changed)
         message = AppMessages.CHECK_FIELD_MILEAGE.value
-        check_condition(condition, message_dict, car, field, field.id, CUSTOM, message)
+        check_condition(
+            condition, message_dict, car, field, field.id, field.status, message
+        )
     except TypeError:
         pass
 
@@ -61,7 +63,9 @@ def check_date_condition(car, field, message_dict):
         )
         condition = expected_date < timezone.now().date()
         message = AppMessages.CHECKER_FIELD_DATE.value
-        check_condition(condition, message_dict, car, field, field.id, CUSTOM, message)
+        check_condition(
+            condition, message_dict, car, field, field.id, field.status, message
+        )
     except TypeError:
         pass
 
