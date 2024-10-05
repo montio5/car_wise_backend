@@ -39,7 +39,16 @@ class SignInAPIView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
 
-        user = authenticate(username=username, password=password)
+        # Use iexact to find the user regardless of username case
+        try:
+            user = User.objects.get(username__iexact=username)
+        except User.DoesNotExist:
+            return Response(
+                {"error": AppMessages.USER_NOT_FOUND_MSG.value}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        # Authenticate using the retrieved user and provided password
+        user = authenticate(username=user.email, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
             return Response(
@@ -122,7 +131,7 @@ class ForgotPasswordView(APIView):
         serializer.is_valid(raise_exception=True)
 
         email = serializer.validated_data["email"]
-        user = User.objects.get(email=email)  # No need to check again as it's validated
+        user = User.objects.get(email__iexact=email)
         code = random.randint(100000, 999999)
 
         # Expire any existing requests
