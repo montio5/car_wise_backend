@@ -1,14 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import (
     CreateAPIView,
     RetrieveUpdateAPIView,
 )
 from apps.user.models import BlacklistedToken, PasswordResetRequest, UserFCMToken
 from apps.user.serializers import (
+    CustomTokenObtainPairSerializer,
     ForgotPasswordSerializer,
     ResetPasswordSerializer,
     UserSerializer,
@@ -16,14 +16,13 @@ from apps.user.serializers import (
     ChangePasswordSerializer,
     VerifyCodeSerializer,
 )
-from django.core.mail import send_mail
 from django.contrib.auth.models import User
 import random
 from django.conf import settings
 from rest_framework import status
 from apps.common.message import AppMessages
-from django.utils.html import format_html
 from django.core.mail import EmailMessage
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class RegisterAPIView(CreateAPIView):
@@ -32,35 +31,8 @@ class RegisterAPIView(CreateAPIView):
     serializer_class = RegisterUserSerializer
 
 
-class SignInAPIView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-
-        # Use iexact to find the user regardless of username case
-        try:
-            user = User.objects.get(username__iexact=username)
-        except User.DoesNotExist:
-            return Response(
-                {"error": AppMessages.USER_NOT_FOUND_MSG.value}, status=status.HTTP_401_UNAUTHORIZED
-            )
-
-        # Authenticate using the retrieved user and provided password
-        user = authenticate(username=user.email, password=password)
-        if user:
-            refresh = RefreshToken.for_user(user)
-            return Response(
-                {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                },
-                status=status.HTTP_200_OK,
-            )
-        return Response(
-            {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
-        )
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 class RetrieveUpdateUserView(RetrieveUpdateAPIView):

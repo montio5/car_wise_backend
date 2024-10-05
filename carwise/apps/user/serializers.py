@@ -6,7 +6,9 @@ from django.utils import timezone
 from datetime import timedelta
 from apps.common.message import AppMessages
 from apps.user.models import PasswordResetRequest
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import get_user_model
+from rest_framework.exceptions import AuthenticationFailed
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -89,7 +91,9 @@ class VerifyCodeSerializer(serializers.Serializer):
         )
 
         if not reset_request:
-            raise serializers.ValidationError(AppMessages.RESET_CODE_NOT_FOUND_MSG.value)
+            raise serializers.ValidationError(
+                AppMessages.RESET_CODE_NOT_FOUND_MSG.value
+            )
 
         if reset_request.is_expired == True:
             raise serializers.ValidationError(AppMessages.RESET_CODE_EXPIRED_MSG.value)
@@ -100,7 +104,7 @@ class VerifyCodeSerializer(serializers.Serializer):
             reset_request.is_expired = True
             reset_request.save()
             raise serializers.ValidationError(AppMessages.RESET_CODE_EXPIRED_MSG.value)
-        return reset_request 
+        return reset_request
 
 
 class ResetPasswordSerializer(serializers.Serializer):
@@ -110,14 +114,14 @@ class ResetPasswordSerializer(serializers.Serializer):
 
     def validate_code(self, value):
         reset_request = (
-            PasswordResetRequest.objects.filter(
-                code=value, is_valid=True
-            )
+            PasswordResetRequest.objects.filter(code=value, is_valid=True)
             .order_by("-created_at")
             .first()
         )
         if not reset_request or reset_request is None:
-            raise serializers.ValidationError(AppMessages.RESET_CODE_NOT_FOUND_MSG.value)
+            raise serializers.ValidationError(
+                AppMessages.RESET_CODE_NOT_FOUND_MSG.value
+            )
 
         if reset_request.is_expired:
             raise serializers.ValidationError(AppMessages.RESET_CODE_EXPIRED_MSG.value)
@@ -134,3 +138,21 @@ class ResetPasswordSerializer(serializers.Serializer):
         if data["new_password"] != data["confirm_new_password"]:
             raise serializers.ValidationError(AppMessages.PASSWORD_DO_NOT_MATCH.value)
         return data
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+
+        try:
+            # Case-insensitive email lookup
+            user = User.objects.get(email__iexact=attrs["username"])
+        except User.DoesNotExist:
+            raise AuthenticationFailed(
+               AppMessages.USER_NOT_FOUND_MSG
+            )
+        attrs["username"] = user.email
+        # Validate with parent method after adjusting the username
+        return super().validate(attrs)
