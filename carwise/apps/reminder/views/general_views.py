@@ -33,7 +33,7 @@ class CarListAPI(ListAPIView):
     serializer_class = CarCompanyListSerializer
 
     def get_queryset(self):
-        return CarCompany.objects.all()
+        return CarCompany.objects.all().order_by("name")
 
 
 # ______________________ Get Car Dashboard API ______________________ #
