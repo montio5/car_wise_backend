@@ -28,10 +28,15 @@ class CarModelListSerializer(serializers.ModelSerializer):
 class CarCompanyListSerializer(serializers.ModelSerializer):
     """serializer for getting car companies"""
 
-    car_models = CarModelListSerializer(
-        many=True, read_only=True, source="carmodel_set"
-    )
+    car_models = serializers.SerializerMethodField()
 
     class Meta:
         model = CarCompany
         fields = ["id", "name", "car_models"]
+
+    def get_car_models(self, obj):
+        # Retrieve the car models and sort them by any field, such as name
+        car_models = obj.carmodel_set.all().order_by(
+            "name"
+        )
+        return CarModelListSerializer(car_models, many=True).data
