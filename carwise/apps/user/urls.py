@@ -17,7 +17,7 @@ urlpatterns = [
     path("profile/", RetrieveUpdateUserView.as_view(), name="register"),
     path("change-password/", ChangePasswordView.as_view(), name="change-password"),
     path("forgot-password/", ForgotPasswordView.as_view(), name="forgot-password"),
-    path("varify-code/", VerifyCodeView.as_view(), name="change-password"),
+    path("verify-code/", VerifyCodeView.as_view(), name="verify_code"),
     path("reset-password/", ResetPasswordAPI.as_view(), name="reset_password"),
     path("fcm-token/", FCMTokenViewSet.as_view(), name="fcm_token"),
 ]
