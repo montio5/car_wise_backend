@@ -150,7 +150,7 @@ msgstr "کد وارد شده یافت نشد"
 
 #: .\apps\common\message.py:41
 msgid "The code is expired"
-msgstr "! کد منقضی شده است "
+msgstr " کد منقضی شده است "
 
 #: .\apps\common\message.py:42
 msgid "Invalid code"
@@ -158,7 +158,7 @@ msgstr "کد نا معتبر است"
 
 #: .\apps\common\message.py:43
 msgid "New password and its repeat do not match."
-msgstr "! رمز عبور و تکرار ان تطابق ندارند "
+msgstr "رمز عبور و تکرار ان تطابق ندارند "
 
 #: .\apps\common\message.py:44
 msgid "{} cannot be lower than the previous mileage."
