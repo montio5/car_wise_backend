@@ -57,12 +57,19 @@ class UserCarListSerializer(serializers.ModelSerializer):
     car_model = serializers.CharField(source="car_model.name")
     car_company = serializers.CharField(source="car_model.car_company.name")
     car_mileage_update_date = serializers.SerializerMethodField()
+    mileage = serializers.SerializerMethodField()
 
     def get_car_mileage_update_date(self,value):
         mileages = Mileage.objects.filter(car=value.id).order_by("-created_date")
         if mileages:
             return find_date_difference(mileages.first().created_date)
         return "no updated needed"
+
+    def get_mileage(self, value):
+        mileages = Mileage.objects.filter(car=value.id).order_by("-created_date")
+        if mileages:
+            return mileages.first().mileage
+        return AppMessages.NO_MILEAGE_FOUND.value
 
     class Meta:
         model = Car
@@ -72,6 +79,7 @@ class UserCarListSerializer(serializers.ModelSerializer):
             "car_company",
             "car_model",
             "car_mileage_update_date",
+            "mileage",
         ]
 
 

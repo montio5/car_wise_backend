@@ -32,7 +32,9 @@ class AppMessages(enum.Enum):
     )
     FORGOT_PASSWORD = _("Forgot Password")
     PAST = _("{} ago updated")
+
     # Errors
+    NO_MILEAGE_FOUND = _("no mileage found")
     CURRENT_PASSWORD_IS_INCORRECT = _("Current password is incorrect.")
     USER_NOT_FOUND_MSG = _("User not found")
     RESET_CODE_NOT_FOUND_MSG = _("Reset code not found")
