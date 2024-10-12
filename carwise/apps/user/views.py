@@ -16,12 +16,8 @@ from apps.user.serializers import (
     ChangePasswordSerializer,
     VerifyCodeSerializer,
 )
-from django.contrib.auth.models import User
-import random
-from django.conf import settings
 from rest_framework import status
 from apps.common.message import AppMessages
-from django.core.mail import EmailMessage
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
@@ -102,47 +98,14 @@ class ForgotPasswordView(APIView):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        email = serializer.validated_data["email"]
-        user = User.objects.get(email__iexact=email)
-        code = random.randint(100000, 999999)
-
-        # Expire any existing requests
-        PasswordResetRequest.objects.filter(user=user, is_expired=False).update(
-            is_expired=True
-        )
-
-        # Create new PasswordResetRequest
-        PasswordResetRequest.objects.create(user=user, code=str(code))
-
-        # Send the email
-        subject = AppMessages.FORGOT_PASSWORD.value
-        # Format the HTML content
-        message = """
-        <div style="text-align: center;">
-            <p>{}</p>
-            <p><strong style="font-size: 18px;">{}</strong></p>
-            <p>{}</p>
-        </div>
-        """.format(
-            AppMessages.YOUR_RESET_PASSWORD.value, 
-            code, 
-            AppMessages.USE_CODE_FOR_REST_PASS.value
-        )
-
-        # Create the EmailMessage object
-        email_message = EmailMessage(
-            subject=subject,
-            body=message,
-            from_email=settings.EMAIL_HOST_USER,
-            to=[email],
-        )
-        email_message.content_subtype = "html"  # This makes sure the email is sent as HTML
-        email_message.send(fail_silently=False)
+        # Call the custom method in the serializer to handle code generation and email sending
+        serializer.send_password_reset_email()
 
         return Response(
             {"message": AppMessages.RESET_CODE_SENT_MSG.value},
             status=status.HTTP_200_OK,
         )
+
 
 
 class VerifyCodeView(APIView):

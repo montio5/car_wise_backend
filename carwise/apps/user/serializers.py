@@ -1,3 +1,5 @@
+import random
+from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.core.validators import EmailValidator
@@ -9,6 +11,8 @@ from apps.user.models import PasswordResetRequest
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import AuthenticationFailed
+from apps.common.message import AppMessages
+from django.core.mail import EmailMessage
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -74,9 +78,50 @@ class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
     def validate_email(self, value):
-        if not User.objects.filter(email=value).exists():
+        # Check if the email exists in the database
+        users_email = User.objects.filter(email__iexact=value.strip())
+        if not users_email.exists():
             raise serializers.ValidationError(AppMessages.USER_NOT_FOUND_MSG.value)
-        return value
+        return users_email.first()
+
+    def send_password_reset_email(self):
+        # Retrieve the validated email
+        email_user = self.validated_data["email"]
+
+        # Expire any existing requests
+        PasswordResetRequest.objects.filter(user=email_user, is_expired=False).update(
+            is_expired=True
+        )
+        # Generate a random reset code
+        code = random.randint(100000, 999999)
+        # Create a new password reset request
+        PasswordResetRequest.objects.create(user=email_user, code=str(code))
+
+        # Prepare the email subject and message
+        subject = AppMessages.FORGOT_PASSWORD.value
+        message = """
+        <div style="text-align: center;">
+            <p>{}</p>
+            <p><strong style="font-size: 18px;">{}</strong></p>
+            <p>{}</p>
+        </div>
+        """.format(
+            AppMessages.YOUR_RESET_PASSWORD.value,
+            code,
+            AppMessages.USE_CODE_FOR_REST_PASS.value,
+        )
+
+        # Create the email message
+        email_message = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=settings.EMAIL_HOST_USER,
+            to=[email_user.email],
+        )
+
+        # Ensure the email is sent as HTML
+        email_message.content_subtype = "html"
+        email_message.send(fail_silently=False)
 
 
 class VerifyCodeSerializer(serializers.Serializer):
