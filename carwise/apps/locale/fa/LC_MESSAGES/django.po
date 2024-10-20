@@ -98,7 +98,7 @@ msgstr ""
 
 #: .\apps\common\message.py:25
 msgid "Password updated successfully"
-msgstr "رمز عبور با موفقیت به روز رسانی شد"
+msgstr "رمز عبور با موفقیت به‌روزرسانی شد"
 
 #: .\apps\common\message.py:26
 msgid "{} has {} elements "
@@ -110,7 +110,7 @@ msgstr "بر اساس کیلومتر تخمین زده شده دارد. لطفا
 
 #: .\apps\common\message.py:28
 msgid "checked. There is nothing to update."
-msgstr "! همه خودرو ها چک شدند. احتیاج به به روزرسانی قطعه ای نیست "
+msgstr "! همه خودرو ها چک شدند. احتیاج به به‌روزرسانی قطعه ای نیست "
 
 #: .\apps\common\message.py:29
 msgid "Your password reset code is:"
@@ -130,11 +130,11 @@ msgstr "بازیابی رمز عبور"
 
 #: .\apps\common\message.py:34
 msgid "{} ago updated"
-msgstr "{} پیش به روزرسانی شد  "
+msgstr "{} پیش به‌روزرسانی شد  "
 
 #: .\apps\common\message.py:35
 msgid "Recently updated"
-msgstr "به تازگی به روزرسانی شده است"
+msgstr "به تازگی به‌روزرسانی شده است"
 
 #: .\apps\common\message.py:38
 msgid "no mileage found"
