@@ -20,7 +20,6 @@ from apps.reminder.serializers.custom_serializers import CustomFieldSerializer
 
 # First Party Imports
 
-# __________________  Car List Serializer ___________________ #
 def find_date_difference(previous_date):
     current_date = datetime.now()
     # Calculate the difference
@@ -50,6 +49,7 @@ def find_date_difference(previous_date):
     return AppMessages.PAST.value.format(message)
 
 
+# __________________  User Car List Serializer ___________________ #
 class UserCarListSerializer(serializers.ModelSerializer):
     """serializer for getting list of cars"""
 
@@ -59,16 +59,22 @@ class UserCarListSerializer(serializers.ModelSerializer):
     car_mileage_update_date = serializers.SerializerMethodField()
     mileage = serializers.SerializerMethodField()
 
-    def get_car_mileage_update_date(self,value):
-        mileages = Mileage.objects.filter(car=value.id).order_by("-created_date")
-        if mileages:
-            return find_date_difference(mileages.first().created_date)
-        return "no updated needed"
+    def get_mileage_data(self, value):
+        mileage_record = (
+            Mileage.objects.filter(car=value.id).order_by("-created_date").first()
+        )
+        return mileage_record
+
+    def get_car_mileage_update_date(self, value):
+        mileage_record = self.get_mileage_data(value)
+        if mileage_record:
+            return find_date_difference(mileage_record.created_date)
+        return "no update needed"
 
     def get_mileage(self, value):
-        mileages = Mileage.objects.filter(car=value.id).order_by("-created_date")
-        if mileages:
-            return mileages.first().mileage
+        mileage_record = self.get_mileage_data(value)
+        if mileage_record:
+            return mileage_record.mileage
         return AppMessages.NO_MILEAGE_FOUND.value
 
     class Meta:
