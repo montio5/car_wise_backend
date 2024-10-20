@@ -46,7 +46,7 @@ def find_date_difference(previous_date):
 
     elif len(parts) == 0:
         # if exact date has come
-        message = AppMessages.DAY.value.format("1")
+        return AppMessages.UPDATED_RECENTLY.value
     return AppMessages.PAST.value.format(message)
 
 
