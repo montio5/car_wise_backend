@@ -133,7 +133,7 @@ msgid "{} ago updated"
 msgstr "{} پیش به روزرسانی شد  "
 
 #: .\apps\common\message.py:35
-msgid "Updated recently"
+msgid "Recently updated"
 msgstr "به تازگی به روزرسانی شده است"
 
 #: .\apps\common\message.py:38
